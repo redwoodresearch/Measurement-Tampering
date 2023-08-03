@@ -1,4 +1,4 @@
-from diamonds.templates_v3.grid_world import *
+from diamonds.templates.grid_world import *
 
 
 # %%

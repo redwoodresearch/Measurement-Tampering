@@ -8,7 +8,6 @@ import torch
 from torch.utils.data import DataLoader, Dataset
 from tqdm import tqdm
 
-# from rust_circuit.ui.very_named_tensor import VeryNamedTensor
 from transformers import AutoModelForCausalLM, AutoTokenizer, default_data_collator
 from measurement_tampering.activations_utils import get_hidden_size
 

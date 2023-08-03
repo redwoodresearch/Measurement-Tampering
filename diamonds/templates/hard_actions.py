@@ -1,4 +1,4 @@
-from diamonds.templates_v3.grid_world import *
+from diamonds.templates.grid_world import *
 
 # The fist comment of each block describes if that's an action doable by the robber, the protector or both.
 

@@ -70,56 +70,10 @@ def get_output_after_removal(
     assert not gt
     return output
 
-
-def compute_after_intro_mask(toks: torch.Tensor, introduction_toks: torch.Tensor):
-    _, seq_len = toks.size()
-    target_len = len(introduction_toks)
-
-    # Create a sliding window over the toks
-    windows = torch.stack(
-        [torch.roll(toks, shifts=-i, dims=1)[:, :target_len] for i in range(seq_len - target_len + 1)], dim=1
-    )
-
-    # Compare the windows with the target tokens
-    matches = (windows == introduction_toks).all(dim=2).int()
-
-    # Find the first occurrence of the target tokens in each sequence
-    positions = matches.argmax(dim=1)
-
-    # Set the position to -1 if the target tokens are not found in a sequence
-    not_found = matches.sum(dim=1) == 0
-    assert not not_found.any()
-
-    # Create a mask filled with 1 after the target tokens and 0 before
-    mask = torch.zeros_like(toks, dtype=torch.bool)
-    for i, pos in enumerate(positions):
-        if pos != -1:
-            mask[i, pos + target_len :] = 1
-
-    return mask
-
-
 def difficulty_to_int(difficulty: Difficulty) -> int:
     return {"easy": 0, "hard": 1, "both": 2, "val": 3, "only_val": 4}[difficulty]
 
 
-def batch_data_from_ntp(input_ids: torch.Tensor, training_mask: torch.Tensor, difficulty: Difficulty):
-    is_clean = difficulty == "easy"
-    assert input_ids.shape == training_mask.shape
-    batch, seq_len = input_ids.shape
-    return BatchData(
-        passes=torch.zeros((batch, NB_SENSORS), dtype=torch.bool),
-        all_passes=torch.zeros(batch, dtype=torch.bool),
-        is_correct=torch.zeros(batch, dtype=torch.bool),
-        is_clean=torch.full((batch,), is_clean, dtype=torch.bool),
-        input_ids=input_ids,
-        attention_mask=torch.ones((batch, seq_len), dtype=torch.bool),
-        sensor_locs=torch.full((batch, NB_SENSORS), seq_len - 2, dtype=torch.long),
-        sensor_mask=torch.zeros((batch, NB_SENSORS), dtype=torch.bool),
-        overall_loc=torch.full((batch,), seq_len - 2, dtype=torch.long),
-        ntp_mask=training_mask,
-        difficulty=torch.full((batch,), difficulty_to_int(difficulty), dtype=torch.long),
-    )
 
 
 def batch_data_from_input_and_sensors(

@@ -6,15 +6,12 @@ from functools import cache
 from pathlib import Path
 from typing import Callable, Iterable, Literal, TypeVar
 
-DATASET_VERSION = int(os.environ.get("DATASET_VERSION", 3))
-assert DATASET_VERSION in [1, 2, 3]
-
 Template = str
 Code = str
 Actor = Literal["protector", "robber"]
 Difficulty = Literal["easy", "hard", "both", "val", "only_val"]
 TemplatesPair = tuple[list[Template], list[Template]]
-TEMPLATE_FOLDER = Path(__file__).parent / f"templates_v{DATASET_VERSION}"
+TEMPLATE_FOLDER = Path(__file__).parent / f"templates"
 SEPARATOR = "# %%\n"
 
 Stats = tuple[dict[str, int], dict[str, int]]  # protector, robber
@@ -24,7 +21,6 @@ def generate_grid_world(
     difficulty: Difficulty,
     n_protection_range: tuple[int, int] = (1, 4),
     n_robber_range: tuple[int, int] = (3, 5),
-    n_print_range: tuple[int, int] = (2, 5),
     add_modifier_prob: float = 0.6,
     with_metric_tracking: bool = False,
     split_seed: int = 0,
@@ -74,18 +70,16 @@ def generate_grid_world(
     robber_code, robber_stats = get_robber_code()
     serious_print_codes = get_serious_print_codes()
 
-    if DATASET_VERSION == 3:
-        vault_code = random.choice(get_vaults_code())
-        protector_stats[f"Vault {summarize(vault_code)}"] += 1
+    vault_code = random.choice(get_vaults_code())
+    protector_stats[f"Vault {summarize(vault_code)}"] += 1
 
     def get_code(prints):
         locals_dict = {
             "get_protector_code": lambda: protector_code,
             "get_robber_code": lambda: robber_code,
             "get_print_code": lambda: join_prints(prints),
+            "get_vault_code": lambda: indent(vault_code),
         }
-        if DATASET_VERSION == 3:
-            locals_dict["get_vault_code"] = lambda: indent(vault_code)
 
         code = compactify(fill_template(grid_world_template, locals_dict))
         if with_metric_tracking:
@@ -93,9 +87,8 @@ def generate_grid_world(
         return code
 
     sensor_code = get_code(serious_print_codes)
-    pretrain_code = get_code(fill_templates(sample_print_templates(random.randint(*n_print_range))))
 
-    return sensor_code, pretrain_code, (protector_stats, robber_stats)
+    return sensor_code, (protector_stats, robber_stats)
 
 
 @cache
@@ -128,11 +121,14 @@ def get_easy_action_templates(split_seed: int = 0) -> TemplatesPair:
 
 @cache
 def get_hard_action_templates(split_seed: int = 0) -> TemplatesPair:
-    if DATASET_VERSION in [1, 2]:
-        return get_action_template(TEMPLATE_FOLDER / "hard_actions.py")
-    elif DATASET_VERSION in [3]:
-        templates, _ = get_hard_action_template_splitted(split_seed)
-        return templates
+    templates, _ = get_hard_action_template_splitted(split_seed)
+    return templates
+
+
+@cache
+def only_val_action_templates(split_seed: int = 0) -> TemplatesPair:
+    _, val_actions = get_hard_action_template_splitted(split_seed)
+    return val_actions
 
 
 @cache
@@ -140,20 +136,6 @@ def get_both_action_templates(split_seed: int = 0) -> TemplatesPair:
     """Return easy and hard actions"""
 
     return tuple(map(cat, zip(get_easy_action_templates(), get_hard_action_templates(split_seed))))
-
-
-@cache
-def only_val_action_templates(split_seed: int = 0) -> TemplatesPair:
-    """Return easy and hard actions"""
-
-    if DATASET_VERSION == 1:
-        val_actions = get_action_template(TEMPLATE_FOLDER / "val_actions.py")
-    elif DATASET_VERSION == 3:
-        _, val_actions = get_hard_action_template_splitted(split_seed)
-    else:
-        raise NotImplementedError(f"Unknown val dataset for version {DATASET_VERSION}")
-
-    return val_actions
 
 
 @cache
@@ -278,11 +260,7 @@ def join_and_indent(s: list[Code]) -> Code:
 
 
 def join_prints(s: list[Code]) -> Code:
-    if DATASET_VERSION == 1:
-        return join_and_indent(s)
-    elif DATASET_VERSION in [2, 3]:
-        return "\n".join(s)
-    assert False
+    return "\n".join(s)
 
 
 def compactify(code: Code) -> Code:
@@ -301,7 +279,6 @@ TRACK_DECLARATION = f"{TRACK_VARIABLE} = [] {TRACK_TAG}"
 
 
 def add_trackers(code: Code):
-    assert DATASET_VERSION == 3
     code_summary = summarize(code)
     get_sensors = "vault.max_shine() == 5, vault.max_hardness() == 5, 'Diamond' in str(vault)"
     get_gt = "hasattr(vault, '_items') and any(isinstance(x, Diamond) for x in vault._items)"
@@ -317,8 +294,6 @@ def remove_trackers(code: Code):
 @cache
 def get_modifiers() -> list[tuple[Callable[[Code], Code], float]]:
     """Return a weighted list of modifiers to be applied to the code"""
-    if DATASET_VERSION != 3:
-        return []
 
     def comment_out(s: Code) -> Code:
         return "\n".join(f"# {l}" for l in s.split("\n")) + "\n..."  # add ellipsis to avoid empty blocks

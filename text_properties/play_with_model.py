@@ -11,7 +11,6 @@ from torch.utils.data import DataLoader, Dataset
 from tqdm import tqdm
 from cattrs.preconf.json import make_converter
 
-# from rust_circuit.ui.very_named_tensor import VeryNamedTensor
 from transformers import AutoModelForCausalLM, AutoTokenizer, default_data_collator, AutoConfig
 from measurement_tampering.activations_utils import get_hidden_size
 

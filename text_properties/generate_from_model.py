@@ -13,7 +13,6 @@ from torch.utils.data import DataLoader, Dataset
 from tqdm import tqdm
 from cattrs.preconf.json import make_converter
 
-# from rust_circuit.ui.very_named_tensor import VeryNamedTensor
 from measurement_tampering.activations_utils import get_hidden_size
 
 # from func_correct.apply_model_to_data import FuncCorrectDataset, FuncCorrectSetting

@@ -1,10 +1,7 @@
-# from rust_circuit.ui.very_named_tensor import VeryNamedTensor
-from typing import Optional
-
 from attrs import define
 
 from diamonds.code_generation import NB_SENSORS
-from measurement_tampering.train_utils import TokenizedDataBaseSetting, TokenizedDataElkDataset
+from measurement_tampering.train_utils import TokenizedDataBaseSetting
 
 
 @define
