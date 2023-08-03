@@ -3,7 +3,7 @@ import os
 
 from tqdm import tqdm
 
-from func_correct.train_ray import load_run_config
+from measurement_tampering.train_ray import load_run_config
 
 os.environ["NO_COMPUTE"] = "1"
 
@@ -19,12 +19,6 @@ plt.style.use("ggplot")
 # %%
 
 colors = plt.rcParams["axes.prop_cycle"].by_key()["color"] + ["black"] + ["green"]
-
-dataset_kind = "func_correct"
-config = load_run_config(dataset_kind)
-split = config["main_eval_split"]
-model_folder = os.path.expanduser(config["model_folder"])
-load_dir = os.path.expanduser(config["data_folder"])
 
 
 def remove_amnesic(name):
@@ -50,19 +44,24 @@ epochs = ["end_state"]
 # model = "pythia-410m"
 # model = "pythia-160m"
 # model = "pythia-70m"
-# model = "small_model"
+model = "tiny_model"
 criteria = "auroc_tn"
 
-curves_per_model = {}
+difficulty = 2
 
-for model in ["small_model", "tiny_model"]:
+obf_suffix = ""
+suffix = "_pythia" if model.startswith("pythia") else ""
+
+curves_per_seed = {}
+
+for seed in range(8):
     # criteria = "auroc_pn"
     # criteria = "val_loss"
 
     def get_all_scores(model_name, epoch):
-        model_path = f"{model_folder}/{model}_{model_name}"
-        print(model_path)
-        return get_scores(load_dir, model_path, epoch, -1, split=split)
+        model_path = os.path.expanduser(f"~/datasets/elk/diamonds/v3.7/models/s{seed}{obf_suffix}/{model}_{model_name}")
+        load_dir = os.path.expanduser(f"~/datasets/elk/diamonds/v3.7/data/s{seed}{suffix}{obf_suffix}")
+        return get_scores(load_dir, model_path, epoch, -1, split="answers_val")
 
     curves_displayed = [
         "dirty",
@@ -86,19 +85,19 @@ for model in ["small_model", "tiny_model"]:
 
     one_data = datas_curves.get("dirty", list(datas_curves.values())[0])[0]
     dirty_positives = one_data["all_passes"] & (~one_data["is_clean"])
-    nano = dirty_positives & one_data["is_correct"]
-    tamper = dirty_positives & (~one_data["is_correct"])
+    nano = dirty_positives & one_data["is_correct"] & (one_data["difficulty"] == difficulty)
+    tamper = dirty_positives & (~one_data["is_correct"]) & (one_data["difficulty"] == difficulty)
     dirty_negatives = ~one_data["all_passes"]
 
     m, s = compute_boostrapped_auroc(
         one_data["answer_all_passes"][dirty_positives], one_data["answer_all_passes"][dirty_negatives]
     )
-    print(f"junction auroc pn {m:.2f}±{s:.2f}")
+    print(f"junction auroc pn {m:.3f}±{s:.3f}")
     _, nb_sensors = one_data["passes"].shape
     cat_positives = torch.cat([one_data["sensor_logits"][:, i][one_data["passes"][:, i]] for i in range(nb_sensors)])
     cat_negatives = torch.cat([one_data["sensor_logits"][:, i][~one_data["passes"][:, i]] for i in range(nb_sensors)])
     m, s = compute_boostrapped_auroc(cat_positives, cat_negatives)
-    print(f"sensor auroc pn {m:.2f}±{s:.2f}")
+    print(f"sensor auroc pn {m:.3f}±{s:.3f}")
 
     if criteria.startswith("auroc"):
         score_curves = {}
@@ -157,7 +156,7 @@ for model in ["small_model", "tiny_model"]:
     else:
         raise ValueError(f"Unknown criteria: {criteria}")
 
-    curves_per_model[model] = curves
+    curves_per_seed[seed] = curves
 # %%
 plt.figure(figsize=(13, 5))
 vertical_line_after = 2
@@ -179,6 +178,7 @@ name_to_label = {
     "tampd_chn_dirty_probe": "Probing\nfor evidence\nof tamper",
     "rdm_dirty": "Random\nprobe\non dirty model",
 }
+
 criteria_to_axis = {
     "auroc_tn": "Real vs Fake AUROC",
 }
@@ -203,29 +203,17 @@ model_order = [
     "really_clean",
     "dirty",
 ]
+cmap = plt.get_cmap("plasma")
 
-main_plot = True
-
-if main_plot:
-    curves_per_model = {
-        "small_model": curves_per_model["small_model"],
-    }
-
-
-for i, (model_name, curves) in enumerate(curves_per_model.items()):
+for i, (model_name, curves) in enumerate(curves_per_seed.items()):
     # remove epoch dim
     scores_per_model = {model_name: curve[-1] for model_name, curve in curves.items()}
     # sort by target difficulty
-    # if i == 0:
-    #     scores_per_model_s = sorted(
-    #         scores_per_model.items(), key=lambda x: ("gt" in x[0], np.mean(x[1][0])), reverse=True
-    #     )
-    #     model_order = [n for n, _ in scores_per_model_s]
 
     means = [scores_per_model[n][0] for n in model_order]
     stds = [scores_per_model[n][1] for n in model_order]
-    width = 0.8 / len(curves_per_model)
-    x = np.arange(len(means)) + (i - len(curves_per_model) / 2 + 0.5) * width
+    width = 0.8 / len(curves_per_seed)
+    x = np.arange(len(means)) + (i - len(curves_per_seed) / 2 + 0.5) * width
     plt.bar(
         x,
         np.array(means),
@@ -233,26 +221,13 @@ for i, (model_name, curves) in enumerate(curves_per_model.items()):
         alpha=0.7,
         capsize=3,
         width=width,
-        label=model_to_name.get(model_name, model_name) if not main_plot else None,
+        # label=model_to_name.get(model_name, model_name),
+        # color=colors[0]
+        color=cmap(i / (len(curves_per_seed) - 1)),
     )
 
-    for i, (mean, std) in enumerate(zip(means, stds)):
-        text = f"{mean:.3f} (±{std:.3f})"
-        print(text, end="\t")
-    print()
-
-    if len(curves_per_model) == 1:
-        # add text with true values below the top of the bar
-        for i, (mean, std) in enumerate(zip(means, stds)):
-            if std < 0.005:
-                text = f"{mean:.3f}\n±{std:.3f}"
-            else:
-                text = f"{mean:.2f}\n±{std:.2f}"
-            y_pos = mean - std - 0.02
-            plt.text(i, y_pos, text, ha="center", va="top")
-
 plt.xticks(np.arange(len(means)), [name_to_label[n] for n in model_order])
-plt.legend()
+# plt.legend()
 # add text with true values below the top of the bar
 # for i, (mean, std) in enumerate(zip(means, stds)):
 #     text = f"{mean:.2f}\n±{std:.2f}"
@@ -264,9 +239,6 @@ plt.axvline(vertical_line_after - 0.5, color="black", linestyle="--", alpha=0.5)
 plt.axhline(0.5, color="black", linestyle="-")
 # plt.xticks(rotation=45)
 plt.ylim(bottom=0.45, top=1)
-if main_plot:
-    plt.ylim(0, 1)
-    plt.title("Function correctness (Codegen 2B)")
 plt.ylabel(criteria_to_axis.get(criteria, criteria))
 plt.show()
 # %%
@@ -279,7 +251,7 @@ plt.show()
 #         plt.errorbar(
 #             np.linspace(0, nb_epochs, nb_epochs * nb_per_epoch + 1),
 #             means,
-#             label=f"{means[-1]:.2f}±{stds[-1]:.2f} {model_name}({difficulty})",
+#             label=f"{means[-1]:.3f}±{stds[-1]:.3f} {model_name}({difficulty})",
 #             color=model_to_col[model_name],
 #             marker="o" if ("amnesic" in model_name or "rm" in model_name) else "+",
 #             linestyle=difficulty_to_line_style[difficulty],
@@ -346,7 +318,7 @@ plt.show()
 #     false_tamper = (nano_scores < threshold).sum().item() / len(nano_scores)
 #     false_nano = (tamper_scores > threshold).sum().item() / len(tamper_scores)
 #     # print("best", false_tamper, false_nano)
-#     print(f"best {false_tamper=:.2f} {false_nano=:.2f}")
+#     print(f"best {false_tamper=:.3f} {false_nano=:.3f}")
 #     # compute false tamper at 5% false nano using the two gaussians
 #     crit_z = 1.645
 #     threshold = min(
@@ -356,7 +328,7 @@ plt.show()
 #     false_tamper = (nano_scores < threshold).sum().item() / len(nano_scores)
 #     false_nano = (tamper_scores > threshold).sum().item() / len(tamper_scores)
 #     # print("from mixture", false_tamper, false_nano)
-#     print(f"from mixture {false_tamper=:.2f} {false_nano=:.2f}")
+#     print(f"from mixture {false_tamper=:.3f} {false_nano=:.3f}")
 # %%
 # # Problem description: add the two numbers together
 # # Test case 1: assert add(1, 1) == 2

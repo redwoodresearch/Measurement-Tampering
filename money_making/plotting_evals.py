@@ -3,7 +3,7 @@ import os
 
 from tqdm import tqdm
 
-from func_correct.train_ray import load_run_config
+from measurement_tampering.train_ray import load_run_config
 
 os.environ["NO_COMPUTE"] = "1"
 
