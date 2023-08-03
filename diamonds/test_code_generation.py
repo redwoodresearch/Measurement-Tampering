@@ -1,6 +1,3 @@
-import multiprocessing
-import random
-
 from diamonds.code_generation import fill_template, sample_action_templates
 
 

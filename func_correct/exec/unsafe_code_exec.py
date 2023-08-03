@@ -4,14 +4,11 @@ import contextlib
 import faulthandler
 import io
 import json
-import multiprocessing
 import os
 import platform
-import signal
 import tempfile
-from copy import deepcopy
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterable, Optional
+from typing import Any, Optional
 
 
 def unsafe_check_correctness(code: str, n_expected_tests: int, default_value: Any) -> None:

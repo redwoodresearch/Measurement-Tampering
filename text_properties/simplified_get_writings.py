@@ -2,8 +2,6 @@ import json
 import os
 import random
 import threading
-from collections import defaultdict
-from typing import Any, Optional
 
 import attrs
 import cattrs

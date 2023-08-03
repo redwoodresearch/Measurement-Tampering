@@ -84,7 +84,6 @@ def run_modifications(
                     print("exceeded max retries, exiting")
                     break
                 retries += 1
-                pass
 
         new_text = remove_backticks_and_strip(response["choices"][0]["message"]["content"])
         all_text.append(new_text)

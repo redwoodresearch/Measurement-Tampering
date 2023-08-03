@@ -1,8 +1,6 @@
 # %%
 import math
 import os
-import sys
-from collections import Counter, defaultdict
 
 import numpy as np
 import torch

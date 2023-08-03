@@ -1,6 +1,5 @@
 # %%
 
-import os
 
 from func_correct.loaded_problem import DATA_DIR, LoadedProblem, get_converter
 from func_correct.prompting import (

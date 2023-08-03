@@ -2,7 +2,6 @@
 # %%
 import ast
 import json
-import os
 
 import attrs
 import cattrs

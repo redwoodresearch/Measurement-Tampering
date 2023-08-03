@@ -1,7 +1,7 @@
 import contextlib
 import itertools
 from functools import cache
-from typing import TYPE_CHECKING, Callable, Literal, Optional
+from typing import TYPE_CHECKING, Callable, Literal
 
 import torch
 

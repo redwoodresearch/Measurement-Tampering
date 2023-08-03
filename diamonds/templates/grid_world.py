@@ -1,6 +1,3 @@
-from collections import namedtuple
-
-
 class Diamond:
     def __repr__(self):
         return "Diamond"

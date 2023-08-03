@@ -188,7 +188,6 @@ def get_completions(
                         print("exceeded max retries, exiting")
                         break
                     retries += 1
-                    pass
 
         if len(responses_per_m) == 0:
             continue

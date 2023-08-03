@@ -2,7 +2,6 @@
 
 import json
 import os
-import random
 import re
 import threading
 from typing import Any, Optional
@@ -153,7 +152,6 @@ def get_completions(
             print("error")
             print(e)
             print(f"{p.task_id=}")
-            pass
 
     dump_and_clear("fin")
 

@@ -4,7 +4,7 @@ import random
 from collections import defaultdict
 from functools import cache
 from pathlib import Path
-from typing import Mapping, Optional, Sequence, Union
+from typing import Mapping, Optional, Sequence
 
 import attrs
 from attrs.validators import instance_of
@@ -110,8 +110,6 @@ def solution_tests_to_input_datum(
 
 EXCLUSION_REASONS = {"not ran", "TIMEOUT", "ModuleNotFoundError", "OSError"}
 # 'not ran' is when there is a failure
-
-RRFS_DATA_DIR = Path("elk/func_correct")
 
 
 @cache
@@ -231,7 +229,7 @@ def select_test_cases(
     try:
         results = get_results(problem, implementation, fin_selected_from, test_idxs)
         # logger.debug(f"succ_check_passing (is_cursed={implementation in cursed_impl})")
-    except Exception as e:
+    except Exception:
         is_cursed = implementation in get_cursed_impls()
         # assert is_cursed
         logger.error(f"Couldn't check check_passing (is_cursed={is_cursed})")
@@ -320,7 +318,7 @@ def problem_to_data(
                 continue
             try:
                 is_correct = is_solution_correct(problem, all_test_cases, impl)
-            except Exception as e:
+            except Exception:
                 # TODO: this isn't really supposed to fail, but it does sometimes
                 is_cursed = impl in get_cursed_impls()
                 # assert is_cursed

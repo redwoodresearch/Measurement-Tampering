@@ -5,7 +5,6 @@ import re
 import threading
 import time
 from collections import defaultdict
-from typing import Any, Optional
 
 import attrs
 import openai

@@ -143,7 +143,7 @@ def sandboxed_check_correctness(
             raise ValueError(f"len(out) != len(codes): {len(out)} != {len(codes)}")
 
         return out
-    except Exception as e:
+    except Exception:
         if len(codes) < MIN_NB_CODES_ALLOWED_SPLIT:
             # print(f"WARNING: Something went wrong with the sandboxed execution:\n{repr(string_out)}", flush=True)
             logger.exception(f"Something went wrong with the sandboxed execution:\n{repr(string_out)}")

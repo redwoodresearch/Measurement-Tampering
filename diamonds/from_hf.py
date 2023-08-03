@@ -1,5 +1,4 @@
 import os
-import sys
 
 import torch
 from datasets import load_dataset

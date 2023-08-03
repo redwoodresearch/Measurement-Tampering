@@ -1,22 +1,12 @@
-import collections
 import contextlib
-import fractions
-import heapq
 import itertools
-import math
-import random
 import re
 import signal
 import sys
-from collections import ChainMap, Counter, OrderedDict, defaultdict, deque
-from functools import lru_cache
-from heapq import *
 # can't use it since docker runsc...
 # from unittest.mock import patch as patch____ , mock_open as mock_open____
 from io import StringIO
 from itertools import accumulate, combinations, permutations, product
-from math import ceil, cos, exp, fabs, floor, gcd, log, log2, sin, sqrt, tan
-from typing import List, Tuple
 
 # import numpy as np
 

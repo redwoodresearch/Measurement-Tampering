@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod, abstractproperty
 from functools import cached_property
-from typing import TYPE_CHECKING, Callable, Generic, Literal, NamedTuple, Optional, TypedDict, TypeVar
+from typing import TYPE_CHECKING, Callable, Literal, NamedTuple, Optional, TypedDict
 
 import torch
 from torch.utils.data import DataLoader, Dataset

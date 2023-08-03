@@ -17,7 +17,7 @@ import gc
 import json
 import math
 import os
-from collections import defaultdict, deque, namedtuple
+from collections import defaultdict
 from typing import Any, Optional, Union
 
 import torch

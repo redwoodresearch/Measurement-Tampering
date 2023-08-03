@@ -486,13 +486,13 @@ def test_tasks(pretrain_model: str, seed: int):
     tasks = []
     add, get_model_path, freeze_args, nofreeze_args = prepare_sweep_creation(tasks, pretrain_model, seed)
 
-    starting_model_path = get_starting_model_path(pretrain_model, get_model_path)
+    get_starting_model_path(pretrain_model, get_model_path)
     amnesic_args = {
         "use_sensor_md_remover": True,
         "sensor_md_remover_remove_labels": "all_passes",
         "probe": "frozen_lin",
     }
-    amnesic_model_path = get_model_path("amnesic_dirty_last_probe")
+    get_model_path("amnesic_dirty_last_probe")
     if seed == 0:
         add(pretrain_model, "dirty_test_", **dirty_weights)
         # add(starting_model_path, "gt_test_", **gt_weights)

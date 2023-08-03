@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Iterable, Optional, Union
+from typing import TYPE_CHECKING, Iterable, Union
 
 import torch
 

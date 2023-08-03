@@ -1,6 +1,5 @@
 # %%
 import json
-import os
 from collections import Counter
 
 from tqdm import tqdm
@@ -13,8 +12,6 @@ from func_correct.prompting import get_converter
 # %%
 
 json_converter = get_converter()
-
-RRFS_DIR = os.path.expanduser(os.getenv(key="RR_RRFS_DIR", default="~/rrfs"))
 
 # %%
 with open(f"{DATA_DIR}/correctness_data/full_p_extended/train_data.json", "r") as f:

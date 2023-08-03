@@ -1,4 +1,3 @@
-import ast
 import itertools
 import logging
 import subprocess
@@ -6,14 +5,13 @@ import threading
 from functools import lru_cache
 from math import ceil
 from pathlib import Path
-from typing import Callable, Optional, TypeVar, Union
+from typing import Callable, Optional, TypeVar
 
 import attrs
 from tqdm import tqdm
 
 from func_correct.exec_code import ExecutionResults, Results, sandboxed_check_correctness
 from func_correct.loaded_problem import (
-    RRFS_DIR,
     InputOutputTestCases,
     LoadedProblem,
     PythonTestCases,

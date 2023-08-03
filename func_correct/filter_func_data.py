@@ -1,6 +1,5 @@
 # %%
 import os.path
-from math import e
 from pathlib import Path
 from typing import Literal
 

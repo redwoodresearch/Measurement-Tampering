@@ -1221,7 +1221,6 @@ def run_query(query, query_info: QueryInfo):
                 print("exceeded max retries, exiting")
                 break
             retries += 1
-            pass
 
     return response
 

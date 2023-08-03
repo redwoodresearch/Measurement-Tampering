@@ -1,6 +1,4 @@
-import json
 import random
-from collections import defaultdict
 
 from func_correct.final_datum import FinalDatum
 from func_correct.loaded_problem import DATA_DIR, PythonTestCases, get_converter

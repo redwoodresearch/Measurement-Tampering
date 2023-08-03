@@ -1,7 +1,6 @@
 # %%
 import json
 import random
-from pathlib import Path
 from typing import Any, Optional
 
 import numpy as np
@@ -134,7 +133,7 @@ if actually_run_round_1_xp:
     plt.hist(neirest_neighbor_similarities(mbpp_problems_descs), bins=100, range=(0, 1), density=True, alpha=0.5)
     plt.hist(neirest_neighbor_similarities(mbpp_problems_descs * 2), bins=100, range=(0, 1), density=True, alpha=0.5)
 # %%
-from collections import Counter, defaultdict
+from collections import Counter
 
 print(Counter([p.test_cases.n for p in easy_mbpp_problems]))
 print(Counter([len(p.description.splitlines()) for p in easy_mbpp_problems]))
@@ -311,7 +310,7 @@ def extract_problems(text: str, id: int) -> list[LoadedProblem]:
                     test_cases,
                 )
             )
-        except Exception as e:
+        except Exception:
             # print("Error while extracting problem:", str(e))
             pass
     return extracted_problems
@@ -1106,7 +1105,7 @@ for j, info in enumerate(tqdm(pb_infos)):
                 meta_data={"probable_parent_task_id": str(probable_parent)},
             )
         )
-    except Exception as e:
+    except Exception:
         # print(e)
         pass
 # %%

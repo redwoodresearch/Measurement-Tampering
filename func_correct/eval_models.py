@@ -1,6 +1,5 @@
 import json
 import os
-from collections import defaultdict
 from typing import Optional
 
 import numpy as np

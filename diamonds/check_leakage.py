@@ -44,4 +44,3 @@ if __name__ == "__main__":
     from fire import Fire
 
     Fire(check_leakages)
-    # check_leakages(os.path.expanduser("~/rrfs/elk/diamonds/v3.7/data/s1"))

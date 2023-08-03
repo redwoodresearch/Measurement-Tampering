@@ -1,5 +1,3 @@
-from typing import Union
-
 import attrs
 
 from func_correct.loaded_problem import InputOutputTestCases, LoadedProblem, PythonTestCases, TestCases
