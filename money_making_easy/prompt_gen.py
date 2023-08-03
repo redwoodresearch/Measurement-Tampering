@@ -1,31 +1,30 @@
-from functools import partial
 import json
 import os
-import re
-from queue import Empty, Queue
-import time
 import random
+import re
 import threading
+import time
+from functools import partial
+from queue import Empty, Queue
 from typing import Optional, Union
-from typing_extensions import assert_never
 
-import openai
 import attrs
-from cattrs.preconf.json import make_converter
 import numpy as np
 import openai
 import tiktoken
+from cattrs.preconf.json import make_converter
 from tqdm import tqdm
+from typing_extensions import assert_never
 
 from money_making_easy.basic_setup import (
-    tamper_style_generation,
-    basic_generation,
-    no_try_generation,
-    full_question_template,
     GeneratedItem,
     GeneratedStoryWithValues,
+    basic_generation,
     extra_question_list,
+    full_question_template,
+    no_try_generation,
     sensor_text_list_pre,
+    tamper_style_generation,
 )
 
 # %%

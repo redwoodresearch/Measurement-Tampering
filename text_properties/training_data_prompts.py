@@ -1,10 +1,8 @@
 from typing import Optional
+
 from text_properties.setup import Setup
-from text_properties.simplified_data_types import (
-    all_setups_flat,
-    SimpleWritingResponse,
-)
 from text_properties.simplified import sensors_simple
+from text_properties.simplified_data_types import SimpleWritingResponse, all_setups_flat
 
 # %%
 

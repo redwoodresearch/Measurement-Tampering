@@ -14,14 +14,7 @@ from tqdm import tqdm, trange
 
 from func_correct.final_datum import solution_tests_to_input_datum
 from func_correct.generation_utils import threaded_generations
-from func_correct.loaded_problem import (
-    AI_WATERMARK,
-    DATA_DIR,
-    LoadedProblem,
-    PythonTestCases,
-    ToEval,
-    get_converter,
-)
+from func_correct.loaded_problem import AI_WATERMARK, DATA_DIR, LoadedProblem, PythonTestCases, ToEval, get_converter
 from func_correct.prompting import tokenizer
 
 converter = get_converter()
@@ -219,7 +212,6 @@ if actually_generate_round_1:
     print(len(tokenizer.encode(answers[0][1][0])))
     print(answers[0][1][0])
 import ast
-
 # %%
 import re
 

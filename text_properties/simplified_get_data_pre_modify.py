@@ -7,10 +7,10 @@ from typing import Any, Optional
 
 import attrs
 import cattrs
-from cattrs.preconf.json import make_converter
 import numpy as np
 import openai
 import tiktoken
+from cattrs.preconf.json import make_converter
 from datasets import load_dataset
 from tqdm import tqdm
 
@@ -27,17 +27,17 @@ from text_properties.sensor_query import get_sensor_query, get_sensor_query_no_f
 from text_properties.setup import Setup
 from text_properties.simplified import (
     algorithmic_properties,
-    sensors_simple,
     latent_output_properties_simple,
+    sensors_simple,
     theoretical_tamper,
     theoretical_tamper_count,
 )
 from text_properties.simplified_data_types import (
-    ParsedResponse,
     FullResponse,
+    ParsedResponse,
     SimpleWritingResponse,
-    all_setups_flat,
     all_setups_dict,
+    all_setups_flat,
     non_algo_props_by_setup,
 )
 

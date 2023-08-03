@@ -1,5 +1,6 @@
 import attrs
 
+
 @attrs.frozen
 class Setup:
     name: str

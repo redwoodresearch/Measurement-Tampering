@@ -4,8 +4,8 @@ import sys
 import torch
 from datasets import load_dataset
 from transformers import AutoTokenizer
-from diamonds.train_data_gen import OMIT_TOKEN
 
+from diamonds.train_data_gen import OMIT_TOKEN
 from measurement_tampering.train_utils import BatchData
 
 parent_folder = "~/rrfs/elk/diamonds/v3.7/data"

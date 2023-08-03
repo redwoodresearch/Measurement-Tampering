@@ -1,14 +1,15 @@
-import attrs
 import json
 
+import attrs
+
 from text_properties.input_text_properties import QueryItem
+from text_properties.modify_text import RewriteItem
 from text_properties.simplified import (
     algorithmic_properties,
+    latent_output_properties_simple,
     theoretical_tamper,
     theoretical_tamper_count,
-    latent_output_properties_simple,
 )
-from text_properties.modify_text import RewriteItem
 
 # %%
 

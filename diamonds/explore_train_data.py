@@ -22,9 +22,7 @@ def compact(code: str):
     return code
 
 
-for code, svals, gt in islice(
-    zip(data["input_ids"], data["passes"], data["is_correct"]), 0, 10000, 1000
-):
+for code, svals, gt in islice(zip(data["input_ids"], data["passes"], data["is_correct"]), 0, 10000, 1000):
     # print(tokenizer.decode([(5 if i in al else x) for i,x in enumerate(code.tolist())]))
     print(compact(tokenizer.decode(code)))
     if gt and not all(svals):

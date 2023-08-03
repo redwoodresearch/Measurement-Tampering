@@ -1,12 +1,11 @@
+import json
 import threading
 import time
-from typing import Optional, Any
-import json
+from typing import Any, Optional
 
-from tqdm import tqdm
-import openai
 import attrs
-
+import openai
+from tqdm import tqdm
 
 basic_writing_prompt = """Here is some text:
 ```
@@ -65,7 +64,7 @@ def run_modifications(
         retries = 0
         while True:
             try:
-                time.sleep(min(0.2 * 2 ** retries, 10.0))
+                time.sleep(min(0.2 * 2**retries, 10.0))
 
                 response = openai.ChatCompletion.create(
                     model=model,

@@ -1,7 +1,9 @@
 # %%
 import os
-from func_correct.loaded_problem import LoadedProblem, get_converter
+
 from tqdm import tqdm
+
+from func_correct.loaded_problem import LoadedProblem, get_converter
 
 problems: list[LoadedProblem] = []
 

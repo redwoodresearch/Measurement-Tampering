@@ -7,12 +7,11 @@ import attrs
 import torch
 from torch.utils.data import DataLoader, Dataset
 from tqdm import tqdm
-
 from transformers import AutoModelForCausalLM, AutoTokenizer, default_data_collator
-from measurement_tampering.activations_utils import get_hidden_size
 
 from func_correct.apply_model_to_data import FuncCorrectDataset, FuncCorrectSetting
 from func_correct.loaded_problem import DATA_DIR, get_converter
+from measurement_tampering.activations_utils import get_hidden_size
 from measurement_tampering.model_with_answer_pred import ModelWithAnswerPred
 
 # %%

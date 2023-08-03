@@ -1,13 +1,13 @@
-from typing import Any, Optional
+import json
 import re
 import threading
 import time
-import json
+from typing import Any, Optional
 
-import openai
-from tqdm import tqdm
 import attrs
+import openai
 import tiktoken
+from tqdm import tqdm
 
 tokenizer = tiktoken.encoding_for_model("gpt-4")
 
@@ -171,7 +171,7 @@ def get_completions(
                     if query.query is None:
                         responses_per_m[model] = None
                         break
-                    time.sleep(min(0.2 * 2 ** retries, 10.0))
+                    time.sleep(min(0.2 * 2**retries, 10.0))
                     responses_per_m[model] = openai.ChatCompletion.create(
                         model=model,
                         messages=query.query,

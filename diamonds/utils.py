@@ -70,10 +70,9 @@ def get_output_after_removal(
     assert not gt
     return output
 
+
 def difficulty_to_int(difficulty: Difficulty) -> int:
     return {"easy": 0, "hard": 1, "both": 2, "val": 3, "only_val": 4}[difficulty]
-
-
 
 
 def batch_data_from_input_and_sensors(

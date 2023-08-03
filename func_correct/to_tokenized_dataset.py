@@ -6,8 +6,8 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from func_correct.apply_model_to_data import MAX_ANSWER_COUNTS, FuncCorrectSetting
 from func_correct.final_datum import PRE_ANSWER_STR, FinalDatum
-from measurement_tampering.train_utils import BatchData
 from func_correct.loaded_problem import get_converter
+from measurement_tampering.train_utils import BatchData
 
 # %%
 

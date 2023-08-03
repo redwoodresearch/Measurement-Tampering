@@ -9,7 +9,7 @@ from transformers import AutoTokenizer
 
 folder, config_name = {
     "money_making_new": ("~/money_making_new/v1_alt_clean/data_gpt_neo_x_tokenizer", "default"),
-    "money_making": ("~/money_making/v4/data_gpt_neo_x_tokenizer", "easier")
+    "money_making": ("~/money_making/v4/data_gpt_neo_x_tokenizer", "easier"),
 }["money_making"]
 
 

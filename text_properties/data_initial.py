@@ -1,35 +1,36 @@
-from collections import defaultdict
-import random
-import threading
-from typing import Any, Optional
-import os
 import json
+import os
+import random
 import re
+import threading
 import time
+from collections import defaultdict
+from typing import Any, Optional
 
+import attrs
+import openai
+import tiktoken
 from datasets import load_dataset
 from tqdm import tqdm
-import openai
-import attrs
-import tiktoken
 
-from text_properties.input_text_properties import QueryItems, data_to_queries
+from text_properties.input_text_properties import (
+    QueryItem,
+    QueryItems,
+    basic_prompt,
+    cut_text,
+    data_to_queries,
+    get_completions,
+    get_remaining_questions,
+)
+from text_properties.modify_text import RewriteItem, get_rewrites
 from text_properties.properties import (
     all_input_properties,
     all_output_properties,
-    latent_output_properties,
-    sensors,
     general_properties,
+    latent_output_properties,
     output_only_properties,
+    sensors,
 )
-from text_properties.input_text_properties import (
-    get_remaining_questions,
-    QueryItem,
-    basic_prompt,
-    cut_text,
-    get_completions,
-)
-from text_properties.modify_text import RewriteItem, get_rewrites
 from text_properties.sensor_query import get_sensor_query
 
 # %%

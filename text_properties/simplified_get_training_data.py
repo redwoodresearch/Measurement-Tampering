@@ -5,19 +5,18 @@ import threading
 from collections import defaultdict
 from typing import Any, Optional
 
-import torch
 import attrs
 import cattrs
-from cattrs.preconf.json import make_converter
 import numpy as np
 import openai
 import tiktoken
+import torch
+from cattrs.preconf.json import make_converter
 from datasets import load_dataset
 from tqdm import tqdm
 from transformers import AutoTokenizer
-from measurement_tampering.train_utils import BatchData
 
-from text_properties.utils import batch_data_from_strings_tokenizer
+from measurement_tampering.train_utils import BatchData
 from text_properties.input_text_properties import (
     QueryItem,
     QueryItems,
@@ -31,28 +30,29 @@ from text_properties.sensor_query import get_sensor_query, get_sensor_query_no_f
 from text_properties.setup import Setup
 from text_properties.simplified import (
     algorithmic_properties,
-    sensors_simple,
     latent_output_properties_simple,
+    sensors_simple,
     theoretical_tamper,
     theoretical_tamper_count,
 )
 from text_properties.simplified_data_types import (
-    ParsedResponse,
     FullResponse,
-    SimpleFullDatumWithGen,
-    all_setups_flat,
-    all_setups_dict,
-    non_algo_props_by_setup,
-    SimpleWritingResponse,
+    ParsedResponse,
     SimpleFullDatum,
+    SimpleFullDatumWithGen,
+    SimpleWritingResponse,
+    all_setups_dict,
+    all_setups_flat,
+    non_algo_props_by_setup,
 )
 from text_properties.training_data_prompts import (
-    writing_response_to_full_prompt,
-    writing_response_to_full_prompt_with_pred,
-    writing_response_to_full_prompt_with_noted_modifications_pred,
-    writing_response_to_full_prompt_with_pred_sensor_predictions,
     sensor_prediction_prompt_part_omit,
+    writing_response_to_full_prompt,
+    writing_response_to_full_prompt_with_noted_modifications_pred,
+    writing_response_to_full_prompt_with_pred,
+    writing_response_to_full_prompt_with_pred_sensor_predictions,
 )
+from text_properties.utils import batch_data_from_strings_tokenizer
 
 # %%
 

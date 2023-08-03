@@ -46,6 +46,7 @@ def process_data(data):
     # Create a Dataset object
     return Dataset.from_dict(dataset_dict)
 
+
 # Create a DatasetDict
 dataset_dict = DatasetDict({"train": process_data(train_dataset), "validation": process_data(val_dataset)})
 # %%

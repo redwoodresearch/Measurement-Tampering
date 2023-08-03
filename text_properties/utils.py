@@ -1,5 +1,7 @@
-import torch
 from typing import Optional
+
+import torch
+
 from measurement_tampering.train_utils import BatchData
 from text_properties.simplified import sensors_simple
 
