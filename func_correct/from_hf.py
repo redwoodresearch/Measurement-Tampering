@@ -6,9 +6,9 @@ from datasets import load_dataset
 from transformers import AutoTokenizer
 
 from func_correct.final_datum import FinalDatum
-from func_correct.loaded_problem import get_converter
+from func_correct.loaded_problem import DATA_DIR, get_converter
 
-save_jsonl_path = os.path.expanduser("~/code_elk_setting/correctness_data/full_p_extended_notrunc_bis")
+save_jsonl_path = os.path.expanduser(f"{DATA_DIR}/correctness_data/full_p_extended_notrunc_bis")
 os.makedirs(save_jsonl_path, exist_ok=True)
 ds = load_dataset("redwoodresearch/function_correctness")
 

@@ -54,4 +54,3 @@ dataset_dict = DatasetDict({"train": process_data(train_dataset), "validation": 
 # Push the dataset to the Hugging Face Hub
 dataset_dict.push_to_hub("redwoodresearch/diamonds", dataset_name, token=True)
 # %%
-# python elk/diamonds/to_hf.py 0; python elk/diamonds/to_hf.py 1; python elk/diamonds/to_hf.py 2; python elk/diamonds/to_hf.py 3; python elk/diamonds/to_hf.py 4; python elk/diamonds/to_hf.py 5; python elk/diamonds/to_hf.py 6; python elk/diamonds/to_hf.py 7; python elk/diamonds/to_hf.py 0 obfuscated; python elk/diamonds/to_hf.py 1 obfuscated; python elk/diamonds/to_hf.py 2 obfuscated; python elk/diamonds/to_hf.py 3 obfuscated; python elk/diamonds/to_hf.py 4 obfuscated; python elk/diamonds/to_hf.py 5 obfuscated; python elk/diamonds/to_hf.py 6 obfuscated; python elk/diamonds/to_hf.py 7 obfuscated;

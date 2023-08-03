@@ -17,16 +17,13 @@ from cattrs.preconf.json import make_converter
 
 from func_correct.misc_utils import is_list_of_str, is_valid_var
 
-# hmmm
 sys.set_int_max_str_digits(500_000)
 
 config: defaultdict[str, Optional[str]] = defaultdict(
     lambda: None, json.loads(Path(__file__).parent.joinpath("config.json").read_text())
 )
-RRFS_DIR = os.path.expanduser(config["rrfs_dir"] or os.getenv(key="RR_RRFS_DIR", default="~/rrfs"))  # type: ignore
 DATA_DIR = os.path.expanduser(config["data_dir"] or os.getenv(key="CODE_ELK_SETTING_DIR", default="~/code_elk_setting"))  # type: ignore
 ISSUE_GENERATION_METHOD = config["issue_generation_method"] or "base"
-GENERATE_DUPED = config["generate_duped"] or False
 
 AI_WATERMARK = "(AI generated) "
 
