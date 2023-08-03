@@ -1,0 +1,16 @@
+{
+    "data_folder": "~/code_elk_setting/correctness_data/full_p_extended_notrunc/smaller_tokenized/for_codegen_tokenizer",
+    "model_folder": "~/code_elk_setting/correctness_data/full_p_extended_notrunc/smaller_tokenized/for_codegen_tokenizer/models",
+    "nb_epochs": 1,
+    "big_lr": 3e-6,
+    "big_lr_freeze": 6e-5,
+    "small_lr": 6e-6,
+    "small_lr_freeze": 2e-4,
+    "tiny_lr":  2e-5,
+    "tiny_lr_freeze":  2e-4,
+    "main_eval_split": "non_overlapping_val",
+    "checkpoint_steps": "epoch",
+    "num_warmup_steps": 64,
+    "sensors_mode": "linear_shared",
+    "seq_len": 2048
+}

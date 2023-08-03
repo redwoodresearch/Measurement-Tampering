@@ -1,0 +1,16 @@
+{
+    "data_folder": "~/money_making/v4/data_gpt_neo_x_tokenizer",
+    "model_folder": "~/money_making/v4/models",
+    "nb_epochs": 4,
+    "small_lr": 1e-6,
+    "small_lr_freeze": 5e-4,
+    "medium_lr": 1e-6,
+    "medium_lr_freeze": 5e-4,
+    "gt_probe_lr_multiplier": 10.0,
+    "main_eval_split": "val",
+    "checkpoint_steps": "every_2_epoch",
+    "num_warmup_steps": 8,
+    "seq_len": 1536,
+    "dirty_token_loss_weight": 0.15,
+    "ignore_seq_len_for_batch": true
+}

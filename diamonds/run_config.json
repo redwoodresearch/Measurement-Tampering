@@ -1,0 +1,14 @@
+{
+    "data_folder": "~/rrfs/elk/diamonds/v3.7/data/s{seed}",
+    "model_folder": "~/rrfs/elk/diamonds/v3.7/models/s{seed}",
+    "nb_epochs": 5,
+    "small_lr": 6e-6,
+    "small_lr_freeze": 2e-4,
+    "tiny_lr":  2e-5,
+    "tiny_lr_freeze":  2e-4,
+    "main_eval_split": "answers_val",
+    "checkpoint_steps": "epoch",
+    "num_warmup_steps": 64,
+    "train_split": "answers_train",
+    "seq_len": 1024
+}
