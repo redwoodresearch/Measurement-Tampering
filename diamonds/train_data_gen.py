@@ -44,12 +44,9 @@ def run(
     n_robber_range: tuple[int, int] = (3, 5),
     add_modifier_prob: float = 0.6,
     pad_token: str = " .",
-    min_tamper: int = 0,
-    min_true_pos: int = 0,
-    min_full_neg: int = 0,
-    min_prop_tamper: float = 0,
-    min_prop_true_pos: float = 0,
-    min_prop_full_neg: float = 0,
+    prop_tamper: float = 0,
+    prop_true_pos: float = 0,
+    prop_full_neg: float = 0,
     split_seed: int = 0,
     seed: int = 0,
     skip_mehs: bool = False,  # skip real positive where >= 1 sensor would be one even if diamond was removed
@@ -69,18 +66,20 @@ def run(
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
     check_tokenizer(tokenizer)
 
-    min_tamper = max(min_tamper, int(min_prop_tamper * n))
-    min_true_pos = max(min_true_pos, int(min_prop_true_pos * n))
-    min_full_neg = max(min_full_neg, int(min_prop_full_neg * n))
+    n_tamper = int(prop_tamper * n)
+    n_true_pos = int(prop_true_pos * n)
+    n_full_neg = int(prop_full_neg * n)
 
-    if min_tamper + min_true_pos > n:
-        raise ValueError("min_tamper + min_true_pos > n")
-    elif difficulty == "easy" and min_tamper > 0:
-        raise ValueError("min_tamper > 0 for difficulty 'easy'")
-    elif difficulty == "easy" and min_true_pos + min_full_neg < n:
+    if n_tamper + n_true_pos > n:
+        raise ValueError("n_tamper + n_true_pos > n")
+    elif difficulty == "easy" and n_tamper > 0:
+        raise ValueError("n_tamper > 0 for difficulty 'easy'")
+    elif difficulty == "easy" and n_true_pos + n_full_neg < n:
         logger.warn("Half negatives should probably not be present in easy mode")
+    elif prop_tamper == 0 and prop_true_pos == 0 and prop_full_neg == 0:
+        logger.warn("Only using half negatives")
 
-    desires = get_desires(n, min_tamper, min_true_pos, min_full_neg, no_tamper=(difficulty == "easy"))
+    desires = get_desires(n, n_tamper, n_true_pos, n_full_neg, no_tamper=(difficulty == "easy"))
 
     data = {k: [] for k in desires}
 
@@ -236,7 +235,7 @@ def run(
         )
 
 
-def get_desires(n_tot: int, min_n_tamper: int, min_n_true_postive: int, min_full_neg: int, no_tamper: bool = False):
+def get_desires(n_tot: int, n_tamper: int, n_true_positive: int, n_full_neg: int, no_tamper: bool = False):
     if n_tot == 0:
         return {}
 
@@ -244,12 +243,8 @@ def get_desires(n_tot: int, min_n_tamper: int, min_n_true_postive: int, min_full
         (False, (s0, s1, s2)) for s0 in [True, False] for s1 in [True, False] for s2 in [True, False]
     ]
     if no_tamper:
-        assert min_n_tamper == 0
+        assert n_tamper is None or n_tamper == 0
         cats.remove((False, (True, True, True)))
-
-    n_tamper = max(min_n_tamper, n_tot // len(cats))
-    n_true_positive = max(min_n_true_postive, n_tot // len(cats))
-    n_full_neg = max(min_full_neg, n_tot // len(cats))
 
     remaining = n_tot - n_tamper - n_true_positive - n_full_neg
     remaining_per_cat = remaining // (len(cats) - 3)

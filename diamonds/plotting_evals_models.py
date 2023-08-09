@@ -10,7 +10,6 @@ from tqdm import tqdm
 from func_correct.eval_models import auroc, get_path
 
 plt.style.use("ggplot")
-# %%
 
 colors = plt.rcParams["axes.prop_cycle"].by_key()["color"] + ["black"] + ["green"]
 # %%
@@ -46,7 +45,8 @@ criteria = "auroc_tn"
 # criteria = "auroc_pn"
 # criteria = "val_loss"
 # seeds = list(range(20))
-seeds = list(range(8))
+seeds = list(range(4))
+# seeds = list(range(8))
 # seeds = [2, 3]
 # seeds = [0]
 present_seeds = None
@@ -67,7 +67,7 @@ core_curves = [  # core
     "dirty_jeft_dp",
     "amnesic_clean_last_probe",
 ]
-extended_curves = ["ood_probe", "tampd_chn_dirty_probe"]
+extended_curves = ["ood_probe", "inconsisd_chn_dirty_probe"]
 tampd_curves = [  # tampd
     "tampd_chn_dirty_probe",
     "tampd_cn_dirty_probe",
@@ -97,7 +97,11 @@ model = "tiny_model"
 curves_per_model = {}
 
 # for obf_suffix in ["", "_obfuscated"]:
-for model in models:
+# for model in models:
+for obf_suffix in ["_tp0.0", "_tp0.01",
+                    "_tp0.045","",
+                    "_tp0.225",
+                   "_tp0.4"]:
     print(model, obf_suffix)
 
     def get_all_scores(model_name, epoch):
@@ -257,8 +261,8 @@ for model in models:
     else:
         raise ValueError(f"Unknown criteria: {criteria}")
 
-    curves_per_model[model] = curves
-    # curves_per_model[obf_suffix] = curves
+    # curves_per_model[model] = curves
+    curves_per_model[obf_suffix] = curves
 # %%
 plt.figure(figsize=(13, 5), dpi=100)
 target_difficulty = "train"
@@ -280,6 +284,7 @@ name_to_label = {
     "ood_probe": "Dirtiness\nprobe",
     "tampd_cn_dirty_probe": "Probing\nfor evidence\nof tamper",
     "tampd_chn_dirty_probe": "Probing\nfor evidence\nof tamper",
+    "inconsisd_chn_dirty_probe": "Probing\nfor evidence\nof tamper",
     "rdm_dirty": "Random\nprobe\non dirty model",
 }
 criteria_to_axis = {
@@ -296,15 +301,22 @@ model_to_name = {
     "small_model": "Codegen 2B",
 }
 obf_suffix_to_name = {
-    "": "No obfuscation",
+    # "": "No obfuscation",
+    "": "fpr=0.1 rpr=0.4 (default)",
     "_obf": "Obfuscation",
     "_obfuscated": "Obfuscation",
+    "_tp0.0": "fpr=0.0 rpr=0.45",
+    "_tp0.01": "fpr=0.01 rpr=0.44",
+    "_tp0.045": "fpr=0.045 rpr=0.405",
+    "_tp0.225": "fpr=0.225 rpr=0.225",
+    "_tp0.4": "fpr=0.4 rpr=0.05",
 }
 
 model_order = [
     "gt",
     "gt_probe",
-    "tampd_chn_dirty_probe",
+    "inconsisd_chn_dirty_probe",
+    # "tampd_chn_dirty_probe",
     "ood_probe",
     "amnesic_clean_last_probe",
     "dirty_jeft_dp",
@@ -312,7 +324,6 @@ model_order = [
     "really_clean",
     "dirty",
 ]
-
 
 # Function to draw bracket between bars
 def draw_bracket(bar1_x, bar1_y, bar2_x, bar2_y, text):
@@ -329,8 +340,8 @@ def bino_p_more(k, n, p=0.5):
     return sum(bino_p(i, n, p) for i in range(k, n + 1))
 
 
-# for i, (obf_suffix, curves) in enumerate(curves_per_model.items()):
-for i, (model_name, curves) in enumerate(curves_per_model.items()):
+# for i, (model_name, curves) in enumerate(curves_per_model.items()):
+for i, (obf_suffix, curves) in enumerate(curves_per_model.items()):
     # remove epoch dim
     scores_per_model = {model_name: curve[target_difficulty][-1] for model_name, curve in curves.items()}
 
@@ -346,12 +357,13 @@ for i, (model_name, curves) in enumerate(curves_per_model.items()):
         width=width,
         error_kw={"elinewidth": 2, "capthick": 2},
         ecolor="darkred",
-        label=model_to_name.get(model_name, model_name),
-        # label=obf_suffix_to_name.get(obf_suffix, obf_suffix),
+        # label=model_to_name.get(model_name, model_name),
+        label=obf_suffix_to_name.get(obf_suffix, obf_suffix),
     )
 
 plt.xticks(np.arange(len(means)), [name_to_label[n] for n in model_order])
-plt.legend()
+plt.legend(loc="lower left")
+
 # add text with true values below the top of the bar
 # for i, (mean, std) in enumerate(zip(means, stds)):
 #     text = f"{mean:.2f}\n±{std:.2f}"

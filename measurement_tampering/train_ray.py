@@ -40,6 +40,7 @@ FAKE = os.environ.get("FAKE", "0") == "1"
 DATASET_KIND = os.environ.get("DATASET_KIND", "func_correct")
 DO_MISSING_EVALS = os.environ.get("DO_MISSING_EVALS", "0") == "1"  # NOT DONE BY DEFAULT
 OBFUSCATE = os.environ.get("OBFUSCATE", "0") == "1"
+TAMPER_PROP = float(os.environ.get("TAMPER_PROP", "0.1"))
 
 PORT = int(os.environ.get("PORT", "29685"))
 
@@ -347,6 +348,8 @@ def prepare_sweep_creation(tasks, pretrain_model, seed):
     model_folder = normalize_config_path(config()["model_folder"], seed)
     if OBFUSCATE:
         model_folder += "_obfuscated"
+    if TAMPER_PROP != 0.1:
+        model_folder += f"_tp{TAMPER_PROP}"
     data_folder = get_data_folder(pretrain_model, seed)
     save_prefix = MODELS[pretrain_model][0]
 
@@ -382,6 +385,8 @@ def get_data_folder(model_name: str, seed: int):
             data_folder += "_pythia"
         if OBFUSCATE:
             data_folder += "_obfuscated"
+        if TAMPER_PROP != 0.1:
+            data_folder += f"_tp{TAMPER_PROP}"
     return data_folder
 
 
@@ -486,13 +491,13 @@ def test_tasks(pretrain_model: str, seed: int):
     tasks = []
     add, get_model_path, freeze_args, nofreeze_args = prepare_sweep_creation(tasks, pretrain_model, seed)
 
-    get_starting_model_path(pretrain_model, get_model_path)
+    starting_model_path = get_starting_model_path(pretrain_model, get_model_path)
     amnesic_args = {
         "use_sensor_md_remover": True,
         "sensor_md_remover_remove_labels": "all_passes",
         "probe": "frozen_lin",
     }
-    get_model_path("amnesic_dirty_last_probe")
+    amnesic_model_path = get_model_path("amnesic_dirty_last_probe")
     if seed == 0:
         add(pretrain_model, "dirty_test_", **dirty_weights)
         # add(starting_model_path, "gt_test_", **gt_weights)
@@ -664,6 +669,24 @@ def tampd_tasks(pretrain_model: str, seed: int):
     return tasks
 
 
+def partial_tasks(pretrain_model: str, seed: int):
+    tasks = []
+    add, get_model_path, freeze_args, _ = prepare_sweep_creation(tasks, pretrain_model, seed)
+    starting_model_path = get_starting_model_path(pretrain_model, get_model_path)
+
+    add(pretrain_model, "dirty", **dirty_weights)
+
+    for suffix, model, probe in [
+        ("", pretrain_model, "lin"),
+        ("_dirty", starting_model_path, "lin"),
+        ("_dirty", starting_model_path, "frozen_lin"),
+    ]:
+        add(model, f"partial_cn{suffix}", probe=probe, **dirty_weights, train_filter="clean_or_neg")
+        add(model, f"partial_cet{suffix}", probe=probe, **dirty_weights, train_filter="clean_or_evidence_for_tamper")
+
+    return tasks
+
+
 def core_and_tampd_tasks(pretrain_model: str, seed: int):
     return core_tasks(pretrain_model, seed) + tampd_tasks(pretrain_model, seed)
 
@@ -794,31 +817,31 @@ def generate(model, seeds, prop_clean=0.2, n_answers=25000):
 
         clean_gen_args = {
             **gen_args,
-            "min_prop_true_pos": 0.5,
-            "min_prop_full_neg": 0.5,
+            "prop_true_pos": 0.5,
+            "prop_full_neg": 0.5,
             "difficulty": "easy",
             "skip_mehs": True,
         }
         dirty_gen_args = {
             **gen_args,
-            "min_prop_tamper": 0.05,
-            "min_prop_true_pos": 0.4,
-            "min_prop_full_neg": 0.35,
+            "prop_tamper": TAMPER_PROP,
+            "prop_true_pos": 0.5 - TAMPER_PROP,
+            "prop_full_neg": 0.35,
             "difficulty": "both",
         }
 
         clean_val_args = {
             **val_gen_args,
-            "min_prop_true_pos": 0.8,
-            "min_prop_full_neg": 0.2,
+            "prop_true_pos": 0.8,
+            "prop_full_neg": 0.2,
             "difficulty": "easy",
             "skip_mehs": True,
         }
         val_gen_args = {
             **val_gen_args,
-            "min_prop_tamper": 0.4,
-            "min_prop_true_pos": 0.4,
-            "min_prop_full_neg": 0.1,
+            "prop_tamper": 0.4,
+            "prop_true_pos": 0.4,
+            "prop_full_neg": 0.1,
             "skip_mehs": True,
         }
         train_val_gen_args = {**val_gen_args, "difficulty": "both", "seed": seed}
@@ -889,7 +912,7 @@ def run(
 
     DATASET_KIND = dataset_kind or DATASET_KIND
     FAKE = fake or FAKE
-    sweep = sweep or os.environ.get("SWEEP", "extended_tasks")
+    sweep = sweep or os.environ.get("SWEEP", "core_tasks")
     pretrain_model = pretrain_model or os.environ.get("PRETRAIN_MODEL", "Salesforce/codegen-350m-mono")
     PORT = port or PORT
 
@@ -929,6 +952,7 @@ def run(
 if __name__ == "__main__":
     from fire import Fire
 
+    # export DATASET_KIND=diamonds; python elk/func_correct/train_ray.py --sweep partial_tasks; DATASET_KIND=diamonds TAMPER_PROP=0 python elk/func_correct/train_ray.py; DATASET_KIND=diamonds TAMPER_PROP=0.01 python elk/func_correct/train_ray.py; DATASET_KIND=diamonds TAMPER_PROP=0.045 python elk/func_correct/train_ray.py; TAMPER_PROP=0.225 python elk/func_correct/train_ray.py; TAMPER_PROP=0.45 python elk/func_correct/train_ray.py
     # rr1 export DATASET_KIND=diamonds; python elk/func_correct/train_ray.py; OBFUSCATE=1 python elk/func_correct/train_ray.py;
     # rr2 export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7; export DATASET_KIND=diamonds; ; DTYPE=float32 python elk/func_correct/train_ray.py EleutherAI/pythia-70m; DTYPE=float32 python elk/func_correct/train_ray.py EleutherAI/pythia-160m; python elk/func_correct/train_ray.py EleutherAI/pythia-410m;
     # CUDA_VISIBLE_DEVICES=0,1 python elk/func_correct/train_ray.py; CUDA_VISIBLE_DEVICES=2,3,4,5,6,7 python elk/func_correct/train_ray.py Salesforce/codegen-2B-mono;
