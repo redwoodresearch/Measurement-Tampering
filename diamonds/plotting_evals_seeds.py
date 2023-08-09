@@ -73,7 +73,8 @@ for seed in range(8):
         "amnesic_clean_last_probe",
         # "rdm_dirty",
         "ood_probe",
-        "tampd_chn_dirty_probe",
+        "inconsisd_chn_dirty_probe",
+        # "tampd_chn_dirty_probe",
     ]
     # (model, epoch)
     datas_curves = {
@@ -194,7 +195,8 @@ model_to_name = {
 model_order = [
     "gt",
     "gt_probe",
-    "tampd_chn_dirty_probe",
+    "inconsisd_chn_dirty_probe",
+    # "tampd_chn_dirty_probe",
     "ood_probe",
     "amnesic_clean_last_probe",
     "dirty_jeft_dp",

@@ -74,7 +74,10 @@ core_curves = [  # core
     "dirty_jeft_dp",
     "amnesic_clean_last_probe",
 ]
-extended_curves = ["ood_probe", "tampd_chn_dirty_probe"]
+extended_curves = ["ood_probe",
+    "inconsisd_chn_dirty_probe",
+    # "tampd_chn_dirty_probe",
+                   ]
 tampd_curves = [  # tampd
     "tampd_chn_dirty_probe",
     "tampd_cn_dirty_probe",
@@ -302,7 +305,8 @@ scores_per_model = {
 order = [
     "gt",
     "gt_probe",
-    "tampd_chn_dirty_probe",
+    "inconsisd_chn_dirty_probe",
+    # "tampd_chn_dirty_probe",
     "ood_probe",
     "amnesic_clean_last_probe",
     "dirty_jeft_dp",
