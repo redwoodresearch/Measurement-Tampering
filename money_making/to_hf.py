@@ -7,9 +7,9 @@ from transformers import AutoTokenizer
 
 # Load the data
 
-folder, config_name = {
-    "money_making_new": ("~/money_making_new/v1_alt_clean/data_gpt_neo_x_tokenizer", "default"),
-    "money_making": ("~/money_making/v4/data_gpt_neo_x_tokenizer", "easier"),
+folder, ds_name = {
+    "money_making_new": ("~/money_making_new/v1_alt_clean/data_gpt_neo_x_tokenizer", "generated_stories"),
+    "money_making": ("~/money_making/v4/data_gpt_neo_x_tokenizer", "generated_stories_easy"),
 }["money_making"]
 
 
@@ -48,6 +48,6 @@ def process_data(data):
 dataset_dict = DatasetDict({"train": process_data(train_dataset), "validation": process_data(val_dataset)})
 # %%
 # Push the dataset to the Hugging Face Hub
-dataset_dict.push_to_hub("redwoodresearch/generated_stories", config_name, token=True)
+dataset_dict.push_to_hub(f"redwoodresearch/{ds_name}", token=True)
 
 # %%
