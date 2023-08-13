@@ -110,12 +110,9 @@ def tokenize_dataset(
 # %%
 
 
-gpt_neox_tokenizer = AutoTokenizer.from_pretrained("EleutherAI/pythia-6.9b-deduped")
-codegen_tokenizer = AutoTokenizer.from_pretrained("Salesforce/codegen-350M-mono")
-
-tokenizers = dict(gpt_neox_tokenizer=gpt_neox_tokenizer, codegen_tokenizer=codegen_tokenizer)
-
-# %%
+tokenizers = {
+    "codegen_tokenizer": AutoTokenizer.from_pretrained("Salesforce/codegen-350M-mono")
+}
 
 file_names = {
     "train": "train_data.json",
@@ -143,46 +140,3 @@ for split, file_name in file_names.items():
         print(f"{file=}")
         tokenized_data = tokenize_dataset(data, tokenizer)
         torch.save(tokenized_data, file)
-
-
-# return FuncCorrectDataset(*self._tokenize_dataset(data), max_answer_count=MAX_ANSWER_COUNTS)
-
-# %%
-
-# full_out_dir = f"{output_data_dir}/for_gpt_neox_tokenizer/"
-# file = f"{full_out_dir}/train.pt"
-# out = torch.load(file)
-
-# {k: v.shape for k, v in out.items()}
-
-# model_new = AutoModelForCausalLM.from_pretrained("EleutherAI/pythia-70m-deduped")
-
-# %%
-
-# print(gpt_neox_tokenizer.decode(out["input_ids"][0]))
-# gpt_neox_tokenizer.encode(" .")[0]
-
-# %%
-
-# x = gpt_neox_tokenizer.decode(tokenize_dataset(data[:2], gpt_neox_tokenizer)["input_ids"][0])
-# print(x)
-
-# %%
-
-# x_out = model_new(input_ids=out["input_ids"][:4], attention_mask=out["attention_mask"][:4])
-
-# x_out["logits"].isnan().any()
-# tok_new = AutoTokenizer.from_pretrained("EleutherAI/pythia-6.9b-deduped")
-# tok_new.padding_side = "left"
-# tok_new.pad_token_id = tok_new.encode(".")[0]
-# tok_new.pad_token = "."
-
-
-# out = tok_new(
-#     "hi",
-#     padding="max_length",
-#     max_length=17,
-#     truncation=True,
-#     return_tensors="pt",
-# )
-# out

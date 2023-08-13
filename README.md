@@ -45,6 +45,5 @@ We've changed the terminology during the process of writing the paper. Here is a
 ## Known issues
 
 - `python <name>/from_hf.py` only works for `diamonds` and `func_correct`.
-- `func_correct` requires additional steps to setup
 - The folder names are hidden in the `run_config` files and are quite obscure, and those are not used in plotting evals.
 - A figure and a link to the paper would be nice.

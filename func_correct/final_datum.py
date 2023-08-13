@@ -25,7 +25,6 @@ class FinalDatum:
     passes: list[bool] = attrs.field(validator=is_list_of_bool)
     is_correct: bool = attrs.field(validator=instance_of(bool))
     is_clean_: Optional[bool] = None
-    # TODO: add more info + annotation here!
 
     def is_tamper(self):
         return not self.is_correct and all(self.passes)
