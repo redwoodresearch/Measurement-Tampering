@@ -1,12 +1,11 @@
 import contextlib
-import itertools
 import re
 import signal
 import sys
+
 # can't use it since docker runsc...
 # from unittest.mock import patch as patch____ , mock_open as mock_open____
 from io import StringIO
-from itertools import accumulate, combinations, permutations, product
 
 # import numpy as np
 

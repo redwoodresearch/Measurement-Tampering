@@ -10,15 +10,7 @@ import attrs
 from attrs.validators import instance_of
 
 from func_correct.exec_code import Result
-from func_correct.loaded_problem import (
-    DATA_DIR,
-    InputOutputTestCases,
-    LoadedProblem,
-    PythonTestCases,
-    TestCaseId,
-    TestCases,
-    get_converter,
-)
+from func_correct.loaded_problem import DATA_DIR, LoadedProblem, PythonTestCases, TestCases
 from func_correct.loaded_problem_extra import LoadedProblemExtra, ProblemIssueItem
 
 

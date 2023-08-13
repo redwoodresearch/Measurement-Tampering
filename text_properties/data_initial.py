@@ -10,17 +10,8 @@ import attrs
 import openai
 import tiktoken
 from datasets import load_dataset
-from tqdm import tqdm
 
-from text_properties.input_text_properties import (
-    QueryItem,
-    QueryItems,
-    basic_prompt,
-    cut_text,
-    data_to_queries,
-    get_completions,
-    get_remaining_questions,
-)
+from text_properties.input_text_properties import QueryItem, QueryItems, cut_text, data_to_queries, get_completions
 from text_properties.modify_text import RewriteItem, get_rewrites
 from text_properties.properties import (
     all_input_properties,

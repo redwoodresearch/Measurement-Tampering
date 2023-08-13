@@ -5,42 +5,13 @@ import threading
 from collections import defaultdict
 
 import attrs
-import cattrs
-import numpy as np
 import openai
 import tiktoken
 from cattrs.preconf.json import make_converter
-from datasets import load_dataset
-from tqdm import tqdm
 
-from text_properties.input_text_properties import (
-    QueryItem,
-    QueryItems,
-    cut_text,
-    data_to_queries,
-    get_completions,
-    get_remaining_questions,
-    make_query,
-)
-from text_properties.modify_text import RewriteItem, get_rewrites
-from text_properties.sensor_query import get_sensor_query, get_sensor_query_no_function
-from text_properties.setup import Setup
-from text_properties.simplified import (
-    algorithmic_properties,
-    latent_output_properties_simple,
-    sensors_simple,
-    theoretical_tamper,
-    theoretical_tamper_count,
-)
-from text_properties.simplified_data_types import (
-    FullResponse,
-    ParsedResponse,
-    SimpleFullDatum,
-    SimpleWritingResponse,
-    all_setups_dict,
-    all_setups_flat,
-    non_algo_props_by_setup,
-)
+from text_properties.input_text_properties import QueryItems, get_completions, make_query
+from text_properties.simplified import sensors_simple
+from text_properties.simplified_data_types import SimpleFullDatum, SimpleWritingResponse
 
 # %%
 

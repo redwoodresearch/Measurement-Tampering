@@ -3,28 +3,18 @@ import os
 import random
 from typing import Optional
 
-import attrs
-import cattrs
-import numpy as np
-import openai
-import tiktoken
 import torch
 from cattrs.preconf.json import make_converter
-from datasets import load_dataset
-from tqdm import tqdm
 from transformers import AutoTokenizer
 
 from measurement_tampering.train_utils import BatchData
 from money_making_easy.basic_setup import (
-    GeneratedItem,
     GeneratedStoryWithValues,
     base_pre_question_context,
-    basic_generation,
     sensor_text_bank_call,
     sensor_text_bank_website,
     sensor_text_counterparty,
     tamper_question_list,
-    tamper_style_generation,
 )
 
 # %%

@@ -6,12 +6,10 @@ from typing import Any, Optional
 import numpy as np
 from attr import frozen
 from matplotlib import pyplot as plt
-from matplotlib.artist import get
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from tqdm import tqdm, trange
 
-from func_correct.final_datum import solution_tests_to_input_datum
 from func_correct.generation_utils import threaded_generations
 from func_correct.loaded_problem import AI_WATERMARK, DATA_DIR, LoadedProblem, PythonTestCases, ToEval, get_converter
 from func_correct.prompting import tokenizer
@@ -211,6 +209,7 @@ if actually_generate_round_1:
     print(len(tokenizer.encode(answers[0][1][0])))
     print(answers[0][1][0])
 import ast
+
 # %%
 import re
 
@@ -1111,7 +1110,6 @@ for j, info in enumerate(tqdm(pb_infos)):
 # %%
 print(f"Got {len(new_extend_problems)} new problems, expected {len(pb_infos)}")
 # %%
-import attrs
 
 # print all attrs of the first problem
 for attr in new_extend_problems[0].__attrs_attrs__:

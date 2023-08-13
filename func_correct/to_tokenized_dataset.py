@@ -2,7 +2,7 @@ import os
 from copy import deepcopy
 
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoTokenizer
 
 from func_correct.apply_model_to_data import MAX_ANSWER_COUNTS, FuncCorrectSetting
 from func_correct.final_datum import PRE_ANSWER_STR, FinalDatum

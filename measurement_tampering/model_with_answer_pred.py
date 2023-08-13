@@ -14,7 +14,6 @@ from transformers import AutoModelForCausalLM
 from diamonds.bdas import BoundlessDasLayer
 from measurement_tampering.activations_utils import (
     find_call_lm_head,
-    get_final_module,
     get_hidden_size,
     get_lm_head,
     get_module_by_layer,

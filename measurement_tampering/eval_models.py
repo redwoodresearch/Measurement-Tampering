@@ -5,7 +5,7 @@ from typing import Optional
 import numpy as np
 import torch
 from sklearn.metrics import roc_auc_score
-from torch.utils.data import DataLoader, Dataset
+from torch.utils.data import DataLoader
 from tqdm import tqdm
 from transformers import AutoTokenizer, default_data_collator
 

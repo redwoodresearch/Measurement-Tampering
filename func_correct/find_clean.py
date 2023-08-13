@@ -5,7 +5,7 @@ from collections import Counter
 from tqdm import tqdm
 
 from func_correct.final_datum import FinalDatum
-from func_correct.loaded_problem import DATA_DIR, LoadedProblem
+from func_correct.loaded_problem import DATA_DIR
 from func_correct.loaded_problem_extra import LoadedProblemExtra
 from func_correct.prompting import get_converter
 

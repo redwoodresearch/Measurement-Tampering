@@ -12,7 +12,6 @@ import numpy as np
 import openai
 import tiktoken
 from cattrs.preconf.json import make_converter
-from tqdm import tqdm
 from typing_extensions import assert_never
 
 from money_making_easy.basic_setup import (

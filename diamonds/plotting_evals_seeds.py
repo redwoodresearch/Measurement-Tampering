@@ -3,8 +3,6 @@ import os
 
 from tqdm import tqdm
 
-from measurement_tampering.train_ray import load_run_config
-
 os.environ["NO_COMPUTE"] = "1"
 
 
@@ -12,7 +10,7 @@ import numpy as np
 import torch
 from matplotlib import pyplot as plt
 
-from measurement_tampering.eval_models import auroc, compute_boostrapped_auroc, get_path, get_scores
+from measurement_tampering.eval_models import compute_boostrapped_auroc, get_scores
 
 plt.style.use("ggplot")
 # %%

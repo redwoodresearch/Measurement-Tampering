@@ -1,4 +1,3 @@
-import itertools
 import json
 import os
 import random
@@ -9,13 +8,7 @@ import torch
 from tqdm import tqdm
 from transformers import AutoTokenizer, PreTrainedTokenizer
 
-from diamonds.code_generation import (
-    Code,
-    Difficulty,
-    generate_grid_world,
-    get_hard_action_template_splitted,
-    remove_trackers,
-)
+from diamonds.code_generation import Code, Difficulty, generate_grid_world, remove_trackers
 from diamonds.utils import (
     batch_data_from_input_and_sensors,
     fix_all_seeds,

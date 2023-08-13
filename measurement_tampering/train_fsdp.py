@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import argparse
-import gc
 import json
 import math
 import os
@@ -23,7 +22,7 @@ from typing import Any, Optional, Union
 import torch
 from attrs import Factory, define
 from sklearn.metrics import roc_auc_score
-from torch.utils.data import DataLoader, Dataset
+from torch.utils.data import DataLoader
 from tqdm import tqdm
 from transformers import (  # type: ignore
     AutoConfig,
@@ -34,12 +33,10 @@ from transformers import (  # type: ignore
     set_seed,
 )
 
-from func_correct import settings
 from measurement_tampering.activations_utils import get_layers, set_transformer
 from measurement_tampering.model_with_answer_pred import (
     GeneralLayerMdRemoverArgs,
     GeneralMdRemoverArgs,
-    GetEmbedsMode,
     ModelWithAnswerPred,
 )
 from measurement_tampering.settings import get_setting

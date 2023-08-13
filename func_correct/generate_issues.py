@@ -15,7 +15,6 @@ from func_correct.prompting import (
     example_code_for_issue_prompt,
     example_potential_issues_assistant_response,
     example_potential_issues_prompt,
-    example_potential_issues_prompt_size,
     get_code_for_issues_prompt,
     get_converter,
     get_issues_prompt,

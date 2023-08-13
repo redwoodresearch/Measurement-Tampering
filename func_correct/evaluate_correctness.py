@@ -1,4 +1,3 @@
-import itertools
 import logging
 import subprocess
 import threading
@@ -10,15 +9,8 @@ from typing import Callable, Optional, TypeVar
 import attrs
 from tqdm import tqdm
 
-from func_correct.exec_code import ExecutionResults, Results, sandboxed_check_correctness
-from func_correct.loaded_problem import (
-    InputOutputTestCases,
-    LoadedProblem,
-    PythonTestCases,
-    TestCases,
-    ToEval,
-    get_converter,
-)
+from func_correct.exec_code import Results, sandboxed_check_correctness
+from func_correct.loaded_problem import InputOutputTestCases, LoadedProblem, PythonTestCases, TestCases
 
 Solution = str
 

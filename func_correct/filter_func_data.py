@@ -7,9 +7,8 @@ import torch
 from tqdm.auto import tqdm
 
 from func_correct.apply_model_to_data import FuncCorrectSetting
-from measurement_tampering.eval_models import epoch_str, get_scores, load_tokenizer_and_config
-from func_correct.final_datum import FinalDatum
 from func_correct.loaded_problem import get_converter
+from measurement_tampering.eval_models import epoch_str, get_scores, load_tokenizer_and_config
 
 # %%
 model_dir = "~/unity_dup/big_model_new_lr"

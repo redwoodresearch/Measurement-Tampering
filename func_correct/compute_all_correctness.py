@@ -4,12 +4,8 @@ import logging
 from pathlib import Path
 
 import attrs
-import ray.data
-from cloudpathlib import CloudPath
-from fire import Fire
 
 from func_correct.evaluate_correctness import LoadedProblemAndResults, evaluate_correctness
-from func_correct.exec_code import Result
 from func_correct.loaded_problem import DATA_DIR, TestCaseId, get_converter
 from func_correct.loaded_problem_extra import LoadedProblemExtra
 

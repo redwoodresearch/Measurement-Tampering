@@ -1,7 +1,6 @@
 import random
 
-from func_correct.final_datum import FinalDatum
-from func_correct.loaded_problem import DATA_DIR, PythonTestCases, get_converter
+from func_correct.loaded_problem import DATA_DIR, get_converter
 from func_correct.loaded_problem_extra import LoadedProblemExtra
 
 # %%

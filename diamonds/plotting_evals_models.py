@@ -98,10 +98,7 @@ curves_per_model = {}
 
 # for obf_suffix in ["", "_obfuscated"]:
 # for model in models:
-for obf_suffix in ["_tp0.0", "_tp0.01",
-                    "_tp0.045","",
-                    "_tp0.225",
-                   "_tp0.4"]:
+for obf_suffix in ["_tp0.0", "_tp0.01", "_tp0.045", "", "_tp0.225", "_tp0.4"]:
     print(model, obf_suffix)
 
     def get_all_scores(model_name, epoch):
@@ -324,6 +321,7 @@ model_order = [
     "really_clean",
     "dirty",
 ]
+
 
 # Function to draw bracket between bars
 def draw_bracket(bar1_x, bar1_y, bar2_x, bar2_y, text):

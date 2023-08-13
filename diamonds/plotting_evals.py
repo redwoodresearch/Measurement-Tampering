@@ -74,10 +74,11 @@ core_curves = [  # core
     "dirty_jeft_dp",
     "amnesic_clean_last_probe",
 ]
-extended_curves = ["ood_probe",
+extended_curves = [
+    "ood_probe",
     "inconsisd_chn_dirty_probe",
     # "tampd_chn_dirty_probe",
-                   ]
+]
 tampd_curves = [  # tampd
     "tampd_chn_dirty_probe",
     "tampd_cn_dirty_probe",

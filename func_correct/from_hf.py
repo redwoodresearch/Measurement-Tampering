@@ -1,9 +1,7 @@
 # %%
 import os
 
-import torch
 from datasets import load_dataset
-from transformers import AutoTokenizer
 
 from func_correct.final_datum import FinalDatum
 from func_correct.loaded_problem import DATA_DIR, get_converter

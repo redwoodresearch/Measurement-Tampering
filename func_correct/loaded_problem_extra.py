@@ -1,6 +1,6 @@
 import attrs
 
-from func_correct.loaded_problem import InputOutputTestCases, LoadedProblem, PythonTestCases, TestCases
+from func_correct.loaded_problem import LoadedProblem, TestCases
 
 
 @attrs.frozen

@@ -3,8 +3,6 @@
 import ast
 import json
 
-import attrs
-import cattrs
 from black import FileMode, InvalidInput, format_str
 from datasets import load_dataset
 from tqdm import tqdm

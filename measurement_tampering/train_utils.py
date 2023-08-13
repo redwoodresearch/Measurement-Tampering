@@ -5,7 +5,7 @@ from functools import cached_property
 from typing import TYPE_CHECKING, Callable, Literal, NamedTuple, Optional, TypedDict
 
 import torch
-from torch.utils.data import DataLoader, Dataset
+from torch.utils.data import Dataset
 
 if TYPE_CHECKING:
     from measurement_tampering.model_with_answer_pred import ModelWithAnswerPred
