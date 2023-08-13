@@ -41,6 +41,7 @@ DATASET_KIND = os.environ.get("DATASET_KIND", "func_correct")
 DO_MISSING_EVALS = os.environ.get("DO_MISSING_EVALS", "0") == "1"  # NOT DONE BY DEFAULT
 OBFUSCATE = os.environ.get("OBFUSCATE", "0") == "1"
 TAMPER_PROP = float(os.environ.get("TAMPER_PROP", "0.1"))
+DIAMOND_N_SEEDS = int(os.environ.get("DIAMOND_N_SEEDS", "8"))
 
 PORT = int(os.environ.get("PORT", "29685"))
 
@@ -390,130 +391,6 @@ def get_data_folder(model_name: str, seed: int):
     return data_folder
 
 
-def full_sweep_tasks(pretrain_model: str, seed: int):
-    tasks = []
-    add, get_model_path, freeze_args, nofreeze_args = prepare_sweep_creation(tasks, pretrain_model, seed)
-    starting_model_path = get_starting_model_path(pretrain_model, get_model_path)
-
-    freeze_lr = freeze_args["learning_rate"]
-    base_gt_probe_learning_rate = config().get("gt_probe_lr_multiplier", 1.0) * freeze_lr
-
-    add(pretrain_model, "dirty", **dirty_weights)
-    add(starting_model_path, "gt", probe="frozen_lin", **gt_weights, learning_rate=base_gt_probe_learning_rate)
-    add(starting_model_path, "clean", probe="frozen_lin", **clean_weights)
-    add(starting_model_path, "dirty_jeft", excl_sensor_mask=[0, 1, 1, 1, 1], **dirty_weights)
-    add(
-        starting_model_path,
-        "dirty_jeft_dp",
-        excl_sensor_mask=[0, 1, 1, 1, 1],
-        excluded_set="dirty-positive",
-        **dirty_weights,
-    )
-
-    nofreeze_lr = nofreeze_args["learning_rate"]
-
-    add(starting_model_path, "dirty_high_lr", learning_rate=nofreeze_lr * 4, **dirty_weights)
-    add(starting_model_path, "dirty_low_lr", learning_rate=nofreeze_lr / 4, **dirty_weights)
-    add(starting_model_path, "dirty_very_high_lr", learning_rate=nofreeze_lr * 16, **dirty_weights)
-    add(starting_model_path, "dirty_very_low_lr", learning_rate=nofreeze_lr / 16, **dirty_weights)
-
-    add(
-        starting_model_path,
-        "gt_high_lr",
-        probe="frozen_lin",
-        learning_rate=base_gt_probe_learning_rate * 4,
-        **gt_weights,
-    )
-    add(
-        starting_model_path,
-        "gt_low_lr",
-        probe="frozen_lin",
-        learning_rate=base_gt_probe_learning_rate / 4,
-        **gt_weights,
-    )
-    add(
-        starting_model_path,
-        "gt_very_high_lr",
-        probe="frozen_lin",
-        learning_rate=base_gt_probe_learning_rate * 16,
-        **gt_weights,
-    )
-    add(
-        starting_model_path,
-        "gt_very_low_lr",
-        probe="frozen_lin",
-        learning_rate=base_gt_probe_learning_rate / 16,
-        **gt_weights,
-    )
-
-    add(starting_model_path, "gt", **gt_weights)
-    add(starting_model_path, "clean", **clean_weights)
-    add(pretrain_model, "really_clean", **clean_weights)
-    add(pretrain_model, "really_dirty", **really_dirty_weights)
-
-    assert (
-        config().get("sensors_mode", "linear") == "linear"
-        and get_setting(DATASET_KIND).nb_individual_sensor_values == 3
-    )
-    eft_masks = {
-        "011": [1, 1, 0, 1, 1],
-        "101": [1, 1, 1, 0, 1],
-        "110": [1, 1, 1, 1, 0],
-    }
-    for i, (eft_name, eft_mask) in enumerate(eft_masks.items()):
-        add(starting_model_path, f"dirty_eft_{eft_name}", excl_sensor_mask=eft_mask, **excl_weights)
-        add(
-            starting_model_path,
-            f"dirty_eft_{eft_name}_dp",
-            excl_sensor_mask=eft_mask,
-            excluded_set=f"dirty-positive-{i}",
-            **excl_weights,
-        )
-
-    add(starting_model_path, "rm1_dirty", probe="frozen_lin", remove_after_layer=-1, **dirty_weights)
-    add(starting_model_path, "rm1_gt", probe="frozen_lin", remove_after_layer=-1, **gt_weights)
-    add(starting_model_path, "rm1_clean", probe="frozen_lin", remove_after_layer=-1, **clean_weights)
-
-    add(starting_model_path, "rm3_dirty", probe="frozen_lin", remove_after_layer=-3, **dirty_weights)
-    add(starting_model_path, "rm3_gt", probe="frozen_lin", remove_after_layer=-3, **gt_weights)
-    add(starting_model_path, "rm3_clean", probe="frozen_lin", remove_after_layer=-3, **clean_weights)
-
-    add(starting_model_path, "rm5_dirty", probe="frozen_lin", remove_after_layer=-5, **dirty_weights)
-    add(starting_model_path, "rm5_gt", probe="frozen_lin", remove_after_layer=-5, **gt_weights)
-    add(starting_model_path, "rm5_clean", probe="frozen_lin", remove_after_layer=-5, **clean_weights)
-
-    add(starting_model_path, "dirty", probe="frozen_lin", **dirty_weights)
-
-    return tasks
-
-
-def test_tasks(pretrain_model: str, seed: int):
-    tasks = []
-    add, get_model_path, freeze_args, nofreeze_args = prepare_sweep_creation(tasks, pretrain_model, seed)
-
-    starting_model_path = get_starting_model_path(pretrain_model, get_model_path)
-    amnesic_args = {
-        "use_sensor_md_remover": True,
-        "sensor_md_remover_remove_labels": "all_passes",
-        "probe": "frozen_lin",
-    }
-    amnesic_model_path = get_model_path("amnesic_dirty_last_probe")
-    if seed == 0:
-        add(pretrain_model, "dirty_test_", **dirty_weights)
-        # add(starting_model_path, "gt_test_", **gt_weights)
-
-        # add(
-        #     amnesic_model_path,
-        #     "amnesic_clean_last",
-        #     **amnesic_args,
-        #     **clean_weights,
-        #     sensor_md_remover_is_locked=True,
-        #     cpu=True,
-        # )
-
-    return tasks
-
-
 def core_tasks(pretrain_model: str, seed: int):
     tasks = []
     add, get_model_path, freeze_args, _ = prepare_sweep_creation(tasks, pretrain_model, seed)
@@ -621,7 +498,7 @@ def gt_tasks(pretrain_model: str, seed: int):
     return tasks
 
 
-def extended_tasks(pretrain_model: str, seed: int):
+def no_train_tasks(pretrain_model: str, seed: int):
     tasks = []
     add, get_model_path, _, _ = prepare_sweep_creation(tasks, pretrain_model, seed)
     starting_model_path = get_starting_model_path(pretrain_model, get_model_path)
@@ -639,14 +516,6 @@ def extended_tasks(pretrain_model: str, seed: int):
         random_probe_init=True,
         re_init_probes=True,
     )
-
-    # ood
-    ood_kwargs = {"train_filter": "positive", "junction_target": "is_clean"}
-    add(starting_model_path, "ood", probe="frozen_lin", **really_dirty_weights, **ood_kwargs)
-
-    # tamper detection
-    add(starting_model_path, f"tampd_cn_dirty", probe="frozen_lin", **tampd_weights, train_filter="clean_or_neg")
-    add(starting_model_path, f"tampd_chn_dirty", probe="frozen_lin", **tampd_weights, train_filter="clean_or_half_neg")
 
     return tasks
 
@@ -667,28 +536,6 @@ def tampd_tasks(pretrain_model: str, seed: int):
         # add(model, f"tampd_chn{suffix}", probe=probe, **tampd_weights, train_filter="clean_or_half_neg")
 
     return tasks
-
-
-def partial_tasks(pretrain_model: str, seed: int):
-    tasks = []
-    add, get_model_path, freeze_args, _ = prepare_sweep_creation(tasks, pretrain_model, seed)
-    starting_model_path = get_starting_model_path(pretrain_model, get_model_path)
-
-    add(pretrain_model, "dirty", **dirty_weights)
-
-    for suffix, model, probe in [
-        ("", pretrain_model, "lin"),
-        ("_dirty", starting_model_path, "lin"),
-        ("_dirty", starting_model_path, "frozen_lin"),
-    ]:
-        add(model, f"partial_cn{suffix}", probe=probe, **dirty_weights, train_filter="clean_or_neg")
-        add(model, f"partial_cet{suffix}", probe=probe, **dirty_weights, train_filter="clean_or_evidence_for_tamper")
-
-    return tasks
-
-
-def core_and_tampd_tasks(pretrain_model: str, seed: int):
-    return core_tasks(pretrain_model, seed) + tampd_tasks(pretrain_model, seed)
 
 
 # this is often the same as tampd, but works differently if overall_tamper_evidence is set
@@ -717,12 +564,22 @@ def inconsistency_only_tampd_tasks(pretrain_model: str, seed: int):
     return tasks
 
 
-def core_and_inconsis_tasks(pretrain_model: str, seed: int):
-    return core_tasks(pretrain_model, seed) + inconsistency_only_tampd_tasks(pretrain_model, seed)
+def partial_tasks(pretrain_model: str, seed: int):
+    tasks = []
+    add, get_model_path, freeze_args, _ = prepare_sweep_creation(tasks, pretrain_model, seed)
+    starting_model_path = get_starting_model_path(pretrain_model, get_model_path)
 
+    add(pretrain_model, "dirty", **dirty_weights)
 
-def core_and_tampd_and_inconsis_tasks(pretrain_model: str, seed: int):
-    return core_and_tampd_tasks(pretrain_model, seed) + inconsistency_only_tampd_tasks(pretrain_model, seed)
+    for suffix, model, probe in [
+        ("", pretrain_model, "lin"),
+        ("_dirty", starting_model_path, "lin"),
+        ("_dirty", starting_model_path, "frozen_lin"),
+    ]:
+        add(model, f"partial_cn{suffix}", probe=probe, **dirty_weights, train_filter="clean_or_neg")
+        add(model, f"partial_cet{suffix}", probe=probe, **dirty_weights, train_filter="clean_or_evidence_for_tamper")
+
+    return tasks
 
 
 def amnesic_tasks(pretrain_model: str, seed: int):
@@ -752,20 +609,6 @@ def amnesic_tasks(pretrain_model: str, seed: int):
     return tasks
 
 
-def ood_tasks(pretrain_model: str, seed: int):
-    tasks = []
-    add, get_model_path, _, _ = prepare_sweep_creation(tasks, pretrain_model, seed)
-    starting_model_path = get_starting_model_path(pretrain_model, get_model_path)
-
-    add(pretrain_model, "dirty", **dirty_weights)
-
-    ood_kwargs = {"train_filter": "positive", "junction_target": "is_clean"}
-    add(starting_model_path, "ood", probe="frozen_lin", **really_dirty_weights, **ood_kwargs)
-    add(starting_model_path, "ood", **really_dirty_weights, **ood_kwargs)
-
-    return tasks
-
-
 def bdas_tasks(pretrain_model: str, seed: int):
     tasks = []
     add, get_model_path, _, _ = prepare_sweep_creation(tasks, pretrain_model, seed)
@@ -777,8 +620,8 @@ def bdas_tasks(pretrain_model: str, seed: int):
     add(pretrain_model, "dirty", **dirty_weights)
     add(starting_model_path, "bdas-1", probe="frozen_lin", **dirty_weights, bdas_after_layer=-1, **bdas_params)
     add(starting_model_path, "bdas-6", probe="frozen_lin", **dirty_weights, bdas_after_layer=-6, **bdas_params)
-    # add(starting_model_path, "bdas-10", **dirty_weights, bdas_after_layer=-10, **bdas_params)
-    # add(starting_model_path, "bdas-15", **dirty_weights, bdas_after_layer=-15, **bdas_params)
+    add(starting_model_path, "bdas-10", **dirty_weights, bdas_after_layer=-10, **bdas_params)
+    add(starting_model_path, "bdas-15", **dirty_weights, bdas_after_layer=-15, **bdas_params)
 
     return tasks
 
@@ -920,9 +763,7 @@ def run(
     print("GPUs available:", torch.cuda.device_count())
 
     if DATASET_KIND == "diamonds":
-        # seeds = list(range(2))
-        # seeds = list(range(4))
-        seeds = list(range(8))
+        seeds = list(range(DIAMOND_N_SEEDS))
         generate(pretrain_model, seeds)
     else:
         seeds = [0]  # no support for *dataset* seed for other datasets
@@ -951,10 +792,5 @@ def run(
 
 if __name__ == "__main__":
     from fire import Fire
-
-    # export DATASET_KIND=diamonds; python elk/func_correct/train_ray.py --sweep partial_tasks; DATASET_KIND=diamonds TAMPER_PROP=0 python elk/func_correct/train_ray.py; DATASET_KIND=diamonds TAMPER_PROP=0.01 python elk/func_correct/train_ray.py; DATASET_KIND=diamonds TAMPER_PROP=0.045 python elk/func_correct/train_ray.py; TAMPER_PROP=0.225 python elk/func_correct/train_ray.py; TAMPER_PROP=0.45 python elk/func_correct/train_ray.py
-    # rr1 export DATASET_KIND=diamonds; python elk/func_correct/train_ray.py; OBFUSCATE=1 python elk/func_correct/train_ray.py;
-    # rr2 export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7; export DATASET_KIND=diamonds; ; DTYPE=float32 python elk/func_correct/train_ray.py EleutherAI/pythia-70m; DTYPE=float32 python elk/func_correct/train_ray.py EleutherAI/pythia-160m; python elk/func_correct/train_ray.py EleutherAI/pythia-410m;
-    # CUDA_VISIBLE_DEVICES=0,1 python elk/func_correct/train_ray.py; CUDA_VISIBLE_DEVICES=2,3,4,5,6,7 python elk/func_correct/train_ray.py Salesforce/codegen-2B-mono;
 
     Fire(run)
