@@ -12,7 +12,7 @@ import numpy as np
 import torch
 from matplotlib import pyplot as plt
 
-from func_correct.eval_models import auroc, compute_boostrapped_auroc, get_path, get_scores
+from measurement_tampering.eval_models import auroc, compute_boostrapped_auroc, get_path, get_scores
 
 plt.style.use("ggplot")
 # %%

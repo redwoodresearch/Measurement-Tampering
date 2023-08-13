@@ -14,7 +14,7 @@ os.environ["MKL_SERVICE_FORCE_INTEL"] = "1"
 
 import ray
 
-from func_correct.eval_models import run as run_eval
+from measurement_tampering.eval_models import run as run_eval
 from measurement_tampering.train_fsdp import dict_to_args, get_default_config, get_path, training_function
 
 # full_name -> (short_name, size, config_path, dirty_is_starting_model)

@@ -3,7 +3,7 @@ import os
 
 import torch
 
-from func_correct.eval_models import get_scores
+from measurement_tampering.eval_models import get_scores
 
 model_folder = os.path.expanduser("~/datasets/elk/diamonds/models")
 data_folder = os.path.expanduser("~/datasets/elk/diamonds")

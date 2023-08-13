@@ -7,7 +7,7 @@ import torch
 from matplotlib import pyplot as plt
 from tqdm import tqdm
 
-from func_correct.eval_models import auroc, get_path
+from measurement_tampering.eval_models import auroc, get_path
 
 plt.style.use("ggplot")
 # %%
