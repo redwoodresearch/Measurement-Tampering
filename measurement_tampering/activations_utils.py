@@ -147,7 +147,10 @@ def get_lm_head(model: "GptModel") -> torch.nn.Module:
     elif is_gpt_neox_layers(model):
         return model.embed_out
     elif is_mpt_layers(model):
-        return model.transformer.wte  # TODO: maybe fucked!!!
+          # TODO: fix this.
+          # This is the transpose of the actual lm_head, which doesn't correspond to an actual module in MPT
+          # See find_call_lm_head for how we handle this...
+        return model.transformer.wte
     else:
         raise NotImplementedError(f"Model type {type(model)} not supported")
 

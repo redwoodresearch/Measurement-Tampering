@@ -204,10 +204,9 @@ class HookingMeanDiffRemover(torch.nn.Module):
         self.remover = remover
         self.layer = layer
 
-    # context manager to insert the hook which projects the activations
     @contextlib.contextmanager
     def hook_into(self, model: "GptModel", batch_data: Optional[BatchData] = None):
-        # TODO: types don't make sense, I'm not sure how this is used
+        """Context manager to insert the hook which projects the activations"""
         target_module = get_module_by_layer(model, self.layer)
 
         def hook_fn(module, input, output):
