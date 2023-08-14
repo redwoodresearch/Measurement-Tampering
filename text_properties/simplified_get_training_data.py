@@ -303,6 +303,7 @@ post_pretrain_sensor_pred_formating = True
 
 # %%
 
+# This is a labeled version of the above `writing_responses_all_val_extra_new.jsonl`.
 with open("full_datum_post_pretrain_all.jsonl", "r") as f:
     post_pre_train_full_datum = [json_converter.loads(line, SimpleFullDatum) for line in f.readlines()]
 len(post_pre_train_full_datum)
@@ -320,6 +321,7 @@ with_gen_datum = None  # TODO as needed
 
 # %%
 
+# This is extra data for validation only.
 with open("full_datum_more_tamp_new_approach.jsonl", "r") as f:
     full_datum_extra_tamp = [json_converter.loads(line, SimpleFullDatum) for line in f.readlines()]
 len(full_datum_extra_tamp)
