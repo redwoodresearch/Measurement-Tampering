@@ -63,7 +63,7 @@ for t_t in ["test", "train"]:
         if x["solutions"] != "":
             for i, s in enumerate(json.loads(x["solutions"])):
                 assert isinstance(s, str)
-                # TODO: format all, not just first 6?
+                # just format the first max_format_num
                 if i < max_format_num:
                     try:
                         solutions.append(format_str(s, mode=FileMode()))

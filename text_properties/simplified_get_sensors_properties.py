@@ -41,8 +41,6 @@ text_to_writing_response = {x.cut_text: x for x in writing_responses}
 simple_sensor_query_items: QueryItems = []
 
 for resp in writing_responses:
-    # for resp in writing_responses_4[:10]: # TODO: note :10
-
     simple_sensor_query_items.append(
         attrs.evolve(
             make_query(

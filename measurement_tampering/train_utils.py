@@ -44,7 +44,6 @@ def get_all_locs(data: BatchData):
 Category = Literal["nano", "tamper", "clean", "positive_clean", "negative"]
 
 
-# TODO: fix up elk dataset
 class ElkDataset(Dataset, ABC):
     @abstractmethod
     def __len__(self) -> int:

@@ -515,7 +515,6 @@ count / len(query_items)
 # %%
 
 xs = general_properties + output_only_properties
-random.shuffle(dirty_input_latent_properties)
 xs[:50]
 
 # xs = list(input_latent_properties)
@@ -541,8 +540,6 @@ random.shuffle(props_to_sample)
 len(props_to_sample)
 
 # %%
-
-# TODO: upsample/add predictions maybe???
 
 with open("elk/text_properties/most_common_words.txt", "r") as f:
     common_words = [x.strip() for x in f.readlines()[150:250]]
