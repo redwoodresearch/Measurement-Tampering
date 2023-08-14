@@ -21,7 +21,7 @@ You might want to regenerate the data, for example to examine the impact of vari
 
 - **Diamond in a vault**: data is automatically generated when executing `python measurement_tampering/train_ray.py --dataset_kind <name>`. Some global variables such as `OBFUSCATE` and `TAMPER_PROP` control generation parameters.
 - **Generated stories**: execute `python money_making/prompt_gen.py` and `python money_making/get_training_data.py` (this will require setting an OPENAI_API_KEY environment variable first).
-- **Text properties**: execute `python text_properties/simplified_get_training_data.py.py`.
+- **Text properties**: look at `text_properties/simplified_get_training_data.py` and `text_properties/data_initial.py`. Generating this data requires running scripts multiple times with different parameters, contact the authors for assistance in regenerating this data.
 - **Function correctness**: look at the `func_correct/pipeline.sh` file. You will need to merge the results of two runs of the pipeline if you want to use both human-generated and AI generated data.
 
 ## Glossary
