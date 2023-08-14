@@ -115,9 +115,9 @@ tokenizers = {
 }
 
 file_names = {
-    "train": "train_data.json",
-    "non_overlapping_val": "non_overlapping_val_data.json",
-    "overlapping_val": "overlapping_val_data.json",
+    "train": "train_data.jsonl",
+    "non_overlapping_val": "non_overlapping_val_data.jsonl",
+    "overlapping_val": "overlapping_val_data.jsonl",
 }
 
 # %%

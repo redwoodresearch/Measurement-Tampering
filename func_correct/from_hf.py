@@ -11,7 +11,7 @@ ds = load_dataset("redwoodresearch/function_correctness")
 
 json_converter = get_converter()
 
-for split_name, file_name in {"train": "train_data.json", "validation": "non_overlapping_val_data.json"}.items():
+for split_name, file_name in {"train": "train_data.jsonl", "validation": "non_overlapping_val_data.jsonl"}.items():
     with open(f"{save_jsonl_path}/{file_name}", "w") as f:
         for d in ds[split_name]:
             obj = FinalDatum(d["text"], d["measurements"], d["is_correct"], d["is_clean"])

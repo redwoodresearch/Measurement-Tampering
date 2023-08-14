@@ -63,7 +63,7 @@ def do_filter(model_dir, data_dir, out_data_dir, filter_op: Literal["notrunc", "
         print(f"Filtered to {len(to_save)} examples")
 
         json_converter = get_converter()
-        out_file = out_path / f"{data_split}_data.json"
+        out_file = out_path / f"{data_split}_data.jsonl"
         with open(out_file, "w") as f:
             for item in tqdm(to_save):
                 f.write(json_converter.dumps(item) + "\n")

@@ -14,7 +14,7 @@ from func_correct.prompting import get_converter
 json_converter = get_converter()
 
 # %%
-with open(f"{DATA_DIR}/correctness_data/full_p_extended/train_data.json", "r") as f:
+with open(f"{DATA_DIR}/correctness_data/full_p_extended/train_data.jsonl", "r") as f:
     all_datum = [json_converter.loads(l, FinalDatum) for l in tqdm(f)]
 
 
