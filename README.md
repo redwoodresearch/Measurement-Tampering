@@ -37,7 +37,8 @@ We've changed the terminology during the process of writing the paper. Here is a
 | Untrusted | Dirty |
 | Measurements | Sensors / Passes |
 | Aggregated measurement | Junction sensor |
-| Generated stories | Money making |
+| Generated stories | Money making new |
+| Generated stories easy | Money making |
 | Ground truth | Correctness |
 | PACE | Amnesic probing |
 | Dirtiness probing | OOD probing |
@@ -45,5 +46,4 @@ We've changed the terminology during the process of writing the paper. Here is a
 ## Known issues
 
 - `python <name>/from_hf.py` only works for `diamonds` and `func_correct`.
-- The folder names are hidden in the `run_config` files and are quite obscure, and those are not used in plotting evals.
-- A figure and a link to the paper would be nice.
+- The folder names and seq_len defined in `run_config.json` files are not consitently used in the data generation pipelines.
