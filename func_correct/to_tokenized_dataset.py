@@ -110,9 +110,7 @@ def tokenize_dataset(
 # %%
 
 
-tokenizers = {
-    "codegen_tokenizer": AutoTokenizer.from_pretrained("Salesforce/codegen-350M-mono")
-}
+tokenizers = {"codegen_tokenizer": AutoTokenizer.from_pretrained("Salesforce/codegen-350M-mono")}
 
 file_names = {
     "train": "train_data.jsonl",
@@ -122,7 +120,7 @@ file_names = {
 
 # %%
 
-input_data_dir = os.path.expanduser("~/code_elk_setting/correctness_data/full_p_extended_notrunc/")
+input_data_dir = os.path.expanduser("~/code_elk_setting/correctness_data/full_p_extended_notrunc")
 output_data_dir = f"{input_data_dir}/tokenized"
 
 os.makedirs(output_data_dir, exist_ok=True)
@@ -134,7 +132,7 @@ for split, file_name in file_names.items():
     with open(f"{input_data_dir}/{file_name}", "r") as f:
         data = [json_converter.loads(l, FinalDatum) for l in f.readlines()]
     for tok_name, tokenizer in tokenizers.items():
-        full_out_dir = f"{output_data_dir}/for_{tok_name}/"
+        full_out_dir = f"{output_data_dir}/for_{tok_name}"
         os.makedirs(full_out_dir, exist_ok=True)
         file = f"{full_out_dir}/{split}.pt"
         print(f"{file=}")

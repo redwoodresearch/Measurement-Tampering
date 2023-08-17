@@ -22,10 +22,12 @@ tokenizer.pad_token_id = pad_token_ids[0]
 split_to_file = {
     "train": "answers_train.pt",
     "validation": "answers_val.pt",
+    "train_for_val": "answers_val_train.pt",
 }
 for seed in range(8):
     folder = os.path.expanduser(f"{parent_folder}/s{seed}")
     dataset = load_dataset(f"redwoodresearch/diamonds-seed{seed}")
+    os.makedirs(folder, exist_ok=True)
     for split, ds in dataset.items():
         texts = ["# SENSOR:\n" + text for text in ds["text"]]
         input_ids = tokenizer(
@@ -33,6 +35,7 @@ for seed in range(8):
             max_length=max_length,
             padding="max_length",
             return_tensors="pt",
+            truncation=True,
         ).input_ids
 
         untruncated = input_ids[:, 0] == tokenizer.pad_token_id

@@ -108,17 +108,10 @@ def get_all_scores(model_name, epoch):
         )
         load_dir = os.path.expanduser(f"~/rrfs/elk/diamonds/{version}/data/s{seed}{suffix}{obf_suffix}")
         scores_path = get_path(load_dir, model_folder, epoch, split=split)
-        local_model_folder = model_folder.replace("rrfs", "datasets")
-        local_scores_path = get_path(load_dir, local_model_folder, epoch, split=split)
-        if os.path.exists(local_scores_path):
-            r.append(torch.load(local_scores_path))
-            found_seeds.add(seed)
-        elif os.path.exists(scores_path):
+        if os.path.exists(scores_path):
             t = torch.load(scores_path)
             r.append(t)
             found_seeds.add(seed)
-            os.makedirs(os.path.dirname(local_scores_path), exist_ok=True)
-            torch.save(t, local_scores_path)
     assert r, f"Could not find {model_folder} {epoch} for {load_dir}"
     if present_seeds is not None:
         assert found_seeds == present_seeds, f"Found seeds {found_seeds} instead of {present_seeds} for {model_name}"

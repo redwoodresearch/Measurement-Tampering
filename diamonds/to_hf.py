@@ -16,6 +16,7 @@ for seed in seeds:
     # Load train and validation data
     train_dataset = torch.load(f"{folder}/answers_train.pt")
     val_dataset = torch.load(f"{folder}/answers_val.pt")
+    val_train_dataset = torch.load(f"{folder}/answers_val_train.pt")
 
     # Function to process data
     def process_data(data):
@@ -41,7 +42,13 @@ for seed in seeds:
         return Dataset.from_dict(dataset_dict)
 
     print(f"Processing data for seed {seed}")
-    dataset_dict = DatasetDict({"train": process_data(train_dataset), "validation": process_data(val_dataset)})
+    dataset_dict = DatasetDict(
+        {
+            "train": process_data(train_dataset),
+            "validation": process_data(val_dataset),
+            "train_for_val": process_data(val_train_dataset),
+        }
+    )
 
     print(f"Pushing data for seed {seed}")
     dataset_dict.push_to_hub(f"redwoodresearch/diamonds-seed{seed}", token=True)
