@@ -115,7 +115,6 @@ tokenizers = {"codegen_tokenizer": AutoTokenizer.from_pretrained("Salesforce/cod
 file_names = {
     "train": "train_data.jsonl",
     "non_overlapping_val": "non_overlapping_val_data.jsonl",
-    "overlapping_val": "overlapping_val_data.jsonl",
 }
 
 # %%
