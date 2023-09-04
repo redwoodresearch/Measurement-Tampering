@@ -19,6 +19,7 @@ from text_properties.training_data_prompts import (
     writing_response_to_full_prompt_with_pred_sensor_predictions,
 )
 from text_properties.utils import batch_data_from_strings_tokenizer
+from text_properties.training_data_utils import get_sensor_locs, is_sensor_loc
 
 # %%
 
@@ -195,20 +196,6 @@ print(all_temp[3])
 # %%
 
 
-def get_sensor_locs(input_ids: torch.Tensor, ntp_mask: Optional[torch.Tensor] = None):
-    backtick_tok = tok.encode("```")
-    assert len(backtick_tok) == 1
-
-    question_mark_tok = tok.encode("?")
-    assert len(question_mark_tok) == 1
-    other_question_mark_tok = tok.encode(")?")
-    assert len(other_question_mark_tok) == 1
-
-    summed = torch.cumsum(input_ids == backtick_tok[0], dim=-1)
-    if ntp_mask is not None:
-        assert ((summed == 2) & (~ntp_mask)).any(dim=-1).all()
-        assert (((summed == 3) & (~ntp_mask)).sum(dim=-1, dtype=torch.int) <= 1).all()
-    return (summed == 2) & ((input_ids == question_mark_tok[0]) | (input_ids == other_question_mark_tok[0]))
 
 
 # %%
@@ -220,7 +207,7 @@ out_val_with_mod = batch_data_from_strings_tokenizer(val_strs_with_mod, tok, mas
 
 if note_sensors:
     for item_with_mod in [out_train_with_mod, out_val_with_mod]:
-        question_points = get_sensor_locs(item_with_mod["input_ids"], item_with_mod["ntp_mask"])
+        question_points = is_sensor_loc(item_with_mod["input_ids"], tok, ntp_mask=item_with_mod["ntp_mask"])
 
         item_with_mod["ntp_mask"] = torch.where(
             item_with_mod["ntp_mask"],
@@ -442,14 +429,7 @@ out_data_post = batch_data_from_strings_tokenizer(
     prob_at_end_instead_of_modify=post_pretrain_keep_pred,
 )
 if post_pretrain_sensor_pred_formating:
-    question_mark_locs = get_sensor_locs(out_data_post["input_ids"])
-    total_locs = torch.cumsum(question_mark_locs, dim=-1)
-    assert (total_locs[:, -1] == 3).all(), "can handle differnet cases, but assuming this is easiest"
-    corresponding_locs = torch.argmax(
-        (total_locs[:, :, None] == torch.arange(1, 4)[None, None]).to(torch.uint8), dim=-2
-    )
-    assert (corresponding_locs[:, 0] != corresponding_locs[:, 1]).all()
-    assert (corresponding_locs[:, 1] != corresponding_locs[:, 2]).all()
+    corresponding_locs = get_sensor_locs(out_data_post["input_ids"], tok)
 
     # use last location for GT and all
     out_data_post["overall_loc"] = corresponding_locs[:, -1]
