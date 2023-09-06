@@ -80,6 +80,8 @@ for split, ds in dataset.items():
 
 # %%
 
+# this is code which tests the equivalence to an existing version of the file.
+
 # x = torch.load(
 #     os.path.expanduser(
 #         "~/money_making_new/v1_alt_clean/data_gpt_neo_x_tokenizer/train.pt"

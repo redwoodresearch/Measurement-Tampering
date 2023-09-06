@@ -74,25 +74,27 @@ for split, ds in dataset.items():
 
 # %%
 
-x = torch.load(
-    os.path.expanduser(
-        "~/rrfs/ryan/text_properties/simplified_setting_v3/post_pretrain_with_extra_tamp_sensor_pred/data_gpt_neo_x_tokenizer/train.pt"
-    )
-)
-y = torch.load(f"{output_dir}/train.pt")
+# this is code which tests the equivalence to an existing version of the file.
 
-assert x.keys() == y.keys()
-for k in x:
-    if k == "input_ids":
-        texts_old = [tokenizer.decode(s) for s in x[k]]
+# x = torch.load(
+#     os.path.expanduser(
+#         "~/rrfs/ryan/text_properties/simplified_setting_v3/post_pretrain_with_extra_tamp_sensor_pred/data_gpt_neo_x_tokenizer/train.pt"
+#     )
+# )
+# y = torch.load(f"{output_dir}/train.pt")
 
-        input_ids_old = tokenizer(
-            texts_old,
-            max_length=max_length,
-            padding="max_length",
-            return_tensors="pt",
-            truncation=True,
-        ).input_ids
-        assert (input_ids_old == y[k]).all()
-    elif k != "sensor_locs" and k != "overall_loc":
-        assert (x[k] == y[k]).all(), k
+# assert x.keys() == y.keys()
+# for k in x:
+#     if k == "input_ids":
+#         texts_old = [tokenizer.decode(s) for s in x[k]]
+
+#         input_ids_old = tokenizer(
+#             texts_old,
+#             max_length=max_length,
+#             padding="max_length",
+#             return_tensors="pt",
+#             truncation=True,
+#         ).input_ids
+#         assert (input_ids_old == y[k]).all()
+#     elif k != "sensor_locs" and k != "overall_loc":
+#         assert (x[k] == y[k]).all(), k
