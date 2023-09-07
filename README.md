@@ -1,8 +1,10 @@
-# Measurement Tampering Detection
+# Benchmarks for Detecting Measurement Tampering
 
-This repository contains the code for the Measurement Tampering Detection Benchmark.
+This repository contains the code for the [Benchmarks for Detecting Measurement Tampering](https://arxiv.org/abs/2308.15605).
 
-We introduce four datasets to evaluate measurement tampering detection techniques, and we introduce techniques for this new task.
+## Abstract
+
+> When training powerful AI systems to perform complex tasks, it may be challenging to provide training signals which are robust to optimization. One concern is \textit{measurement tampering}, where the AI system manipulates multiple measurements to create the illusion of good results instead of achieving the desired outcome. In this work, we build four new text-based datasets to evaluate measurement tampering detection techniques on large language models. Concretely, given sets of text inputs and measurements aimed at determining if some outcome occurred, as well as a base model able to accurately predict measurements, the goal is to determine if examples where all measurements indicate the outcome occurred actually had the outcome occur, or if this was caused by measurement tampering. We demonstrate techniques that outperform simple baselines on most datasets, but don't achieve maximum performance. We believe there is significant room for improvement for both techniques and datasets, and we are excited for future work tackling measurement tampering.
 
 ## How to use this repository
 
