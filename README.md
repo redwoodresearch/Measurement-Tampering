@@ -51,5 +51,4 @@ We've changed the terminology during the process of writing the paper. Here is a
 
 ## Known issues
 
-- `python <name>/from_hf.py` only works for `diamonds` and `func_correct`.
 - The folder names and seq_len defined in `run_config.json` files are not consitently used in the data generation pipelines.
